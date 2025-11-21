@@ -1,40 +1,97 @@
-// Quick Storage Helpers
-const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
-const load = (k, d) => JSON.parse(localStorage.getItem(k) || JSON.stringify(d));
+/* --------------------- DATA DE PELÍCULAS / SERIES --------------------- */
 
-// Elements
-const el = id => document.getElementById(id);
+const moviesData = {
+  inicio: [
+    {
+      title: "Tralalero Tralala Movie",
+      cover: "TralaleroTralalaMovie.png",
+      video: "videos/TralaleroTralalaMovie.mp4"
+    },
+    {
+      title: "Cat Legends",
+      cover: "covers/catlegends.jpg",
+      video: "videos/catlegends.mp4"
+    }
+  ],
 
-const WELCOME = el("welcome");
-const LOGIN_AREA = el("login_area");
+  series: [
+    {
+      title: "Feline Adventures",
+      cover: "covers/felineadventures.jpg",
+      video: "videos/felineadventures.mp4"
+    },
+    {
+      title: "Street Cats",
+      cover: "covers/streetcats.jpg",
+      video: "videos/streetcats.mp4"
+    }
+  ],
 
-const NEW_USER = el("user_new_username");
-const NEW_PASS = el("user_new_password");
+  peliculas: [
+    {
+      title: "Midnight Meow",
+      cover: "covers/midnightmeow.jpg",
+      video: "videos/midnightmeow.mp4"
+    },
+    {
+      title: "Laser Pointer War",
+      cover: "covers/laserwar.jpg",
+      video: "videos/laserwar.mp4"
+    },
+    {
+      title: "The Big Purrr",
+      cover: "covers/thebigpurr.jpg",
+      video: "videos/thebigpurr.mp4"
+    }
+  ]
+};
 
-const LOGIN_USER = el("user_login_username");
-const LOGIN_PASS = el("user_login_password");
 
-const BTN_REGISTER = el("btn_register");
-const BTN_SHOW_LOGIN = el("btn_show_login");
-const BTN_SHOW_REGISTER = el("btn_show_register");
-const BTN_LOGIN = el("btn_login");
 
-const WELCOME_TEXT = el("welcome_text");
-const AVATAR_IMG = el("avatar_img");
-const AVATAR_INPUT = el("avatar_input");
-const BTN_SAVE_AVATAR = el("btn_save_avatar");
-const BTN_LOGOUT = el("btn_logout");
-const BTN_AJUSTES = el("btn_ajustes");
+/* --------------------- FUNCIÓN PARA CARGAR PELÍCULAS --------------------- */
 
-const SETTINGS_MODAL = el("settings_modal");
-const MOVIE_MODAL = el("movie_modal");
+function loadMovies(section) {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
 
-const MOVIE_GRID = el("movie_grid");
-const BIGBANNER = el("bigbanner");
-const BIGBANNER_TITLE = el("bigbanner_title");
+  const list = moviesData[section];
+  if (!list) return;
 
-const VIDEO_PLAYER = el("video_player");
-const MODAL_BANNER = el("modal_banner");
+  // Cambiar banner
+  const banner = document.getElementById("bigbanner");
+  const bannerTitle = document.getElementById("bigbanner_title");
+
+  banner.style.backgroundImage = `url('${list[0].cover}')`;
+  bannerTitle.textContent = list[0].title;
+
+  // Crear tarjetas
+  list.forEach((item, i) => {
+    const card = document.createElement("div");
+    card.className = "card-movie";
+    card.innerHTML = `
+      <img src="${item.cover}">
+      <div style="padding:10px;font-weight:600">${item.title}</div>
+    `;
+    card.onclick = () => openMovie(item);
+    grid.appendChild(card);
+  });
+}
+
+
+
+/* --------------------- MODAL DE REPRODUCCIÓN --------------------- */
+
+function openMovie(movie) {
+  const modal = document.getElementById("movie_modal");
+  const video = document.getElementById("video_player");
+  const banner = document.getElementById("modal_banner");
+
+  banner.style.backgroundImage = `url('${movie.cover}')`;
+  video.src = movie.video;
+  video.classList.add("hidden");
+  video.pause();
+  modal.classList.add("open");
+}const MODAL_BANNER = el("modal_banner");
 const BTN_PLAY = el("btn_play");
 const BTN_CLOSE_MODAL = el("btn_close_modal");
 const BTN_CLOSE_SETTINGS = el("btn_close_settings");
