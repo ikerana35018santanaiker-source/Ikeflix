@@ -1,94 +1,185 @@
-<!doctype html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Catflix — 24h Challenge</title>
-  <link rel="stylesheet" href="catflix-style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catflix</title>
+  <link rel="stylesheet" href="catflix-movies.js"> <!-- dummy avoid errors -->
+  <style>
+/* ---- CSS COMPLETO (MEJORADO) ---- */
+:root{
+  --bg-900:#05070a;--bg-800:#071018;--card:rgba(255,255,255,0.03);
+  --glass:rgba(255,255,255,0.04);--muted:#9fb0c4;--text:#e7f0f8;
+  --accent:#e50914;--accent-600:#b30b10;--radius:12px;
+  --shadow-1:0 8px 30px rgba(2,6,23,0.6);--glass-blur:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Inter,Arial;background:linear-gradient(180deg,var(--bg-900),var(--bg-800));
+  color:var(--text);min-height:100vh;
+}
+.hidden{display:none!important}
+.overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.6);z-index:99;padding:20px;backdrop-filter:blur(8px)}
+.card{background:var(--glass);padding:26px;border-radius:16px;max-width:620px;width:100%;box-shadow:var(--shadow-1)}
+.card input{width:100%;margin:6px 0;padding:10px;border-radius:8px;background:#0002;color:white;border:1px solid #ffffff12}
+button{padding:10px 14px;border-radius:8px;border:0;background:var(--accent);color:white;font-weight:600;margin-top:8px;cursor:pointer}
+button.ghost{background:transparent;border:1px solid #ffffff22}
+header.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:16px;padding:12px 20px;
+  background:rgba(0,0,0,0.45);backdrop-filter:blur(8px)}
+.navlink{padding:8px 12px;border-radius:8px;color:var(--muted);cursor:pointer;font-weight:600}
+.navlink.active,.navlink:hover{color:white;background:#ffffff0a}
+.avatar{width:34px;height:34px;border-radius:50%;object-fit:cover}
+.hero{padding:16px}
+.bigbanner{height:300px;border-radius:12px;background-size:cover;background-position:center;
+  display:flex;align-items:end;padding:20px;box-shadow:inset 0 -60px 120px rgba(0,0,0,0.7)}
+.grid{padding:20px;display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+.card-movie{background:#ffffff05;border-radius:10px;overflow:hidden;cursor:pointer;box-shadow:var(--shadow-1)}
+.card-movie img{width:100%;height:220px;object-fit:cover}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:200}
+.modal.open{display:flex}
+.modalcard{background:#0b0f15;border-radius:12px;max-width:780px;width:90%;padding:16px}
+.modalcard .banner{height:300px;background-size:cover;background-position:center;border-radius:8px}
+  </style>
 </head>
-<body>  <!-- Welcome / Login overlay -->  <div id="welcome" class="overlay">
-    <div class="card">
-      <div style="display:flex;gap:18px;align-items:center">
-        <div style="flex:1">
-          <h1>Catflix — Crea tu perfil</h1>
-          <p class="lead">Reto 24h: construyendo una versión simple de Netflix. Crea cuenta o inicia sesión.</p>
-        </div>
-        <img src="CatflixLogo.png" alt="logo" style="width:72px;height:72px;border-radius:12px;object-fit:cover">
-      </div><div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
-    <div>
-      <input id="user_new_username" type="text" placeholder="Usuario nuevo" />
-    </div>
-    <div>
-      <input id="user_new_password" type="password" placeholder="Contraseña" />
-    </div>
-  </div>
-  <div style="display:flex;gap:8px;margin-top:12px">
-    <button id="btn_register">Crear cuenta</button>
-    <button id="btn_show_login" class="ghost">Ya tengo cuenta / Iniciar</button>
-  </div>
-
-  <hr style="margin:14px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
-
-  <div id="login_area" style="display:none">
-    <div style="display:flex;gap:8px">
-      <input id="user_login_username" type="text" placeholder="Usuario" />
-      <input id="user_login_password" type="password" placeholder="Contraseña" />
-    </div>
-    <div style="margin-top:12px;display:flex;gap:8px">
-      <button id="btn_login">Iniciar sesión</button>
-      <button id="btn_show_register" class="ghost">Crear nueva</button>
-    </div>
-  </div>
+<body><!-- ---------------- WELCOME / LOGIN ---------------- --><div id="welcome" class="overlay">
+  <div class="card">
+    <h2>Bienvenido a Catflix</h2>
+    <p>Crear cuenta o iniciar sesión</p><div id="register_box">
+  <input id="reg_user" type="text" placeholder="Nuevo usuario">
+  <input id="reg_pass" type="password" placeholder="Contraseña">
+  <button id="btn_register">Registrarse</button>
+  <button id="show_login" class="ghost">Ya tengo cuenta</button>
 </div>
 
-  </div>  <!-- Topbar -->  <header class="topbar">
-    <div class="logo">
-      <img id="logo_img" src="CatflixLogo.png" alt="logo" />
-      <div style="font-weight:700">Catflix</div>
-    </div>
-    <nav>
-      <div class="navlink active" id="nav_inicio">Inicio</div>
-      <div class="navlink" id="nav_series">Series</div>
-      <div class="navlink" id="nav_peliculas">Películas</div>
-    </nav>
-    <div class="spacer"></div>
-    <div class="profile">
-      <div class="small" id="welcome_text">Hola</div>
-      <img id="avatar_img" class="avatar" src="default-avatar.png" alt="avatar" />
-      <button id="btn_ajustes" class="ghost">Ajustes</button>
-    </div>
-  </header>  <!-- Hero -->  <section class="hero">
-    <div id="bigbanner" class="bigbanner" style="background-image: url('BigMovieSerie.png')">
-      <div style="color:white">
-        <h2 id="bigbanner_title">BigMovieSerie</h2>
-        <p class="small">La película destacada</p>
-      </div>
-    </div>
-  </section>  <!-- Grid -->  <section>
-    <div class="grid" id="movie_grid"></div>
-  </section>  <!-- Movie Modal -->  <div id="movie_modal" class="modal">
-    <div class="modalcard">
-      <div id="modal_banner" class="banner"></div>
-      <div class="controls">
-        <button id="btn_play">Reproducir</button>
-        <button id="btn_close_modal" class="ghost">Cerrar</button>
-      </div>
-      <div style="margin-top:12px">
-        <video id="video_player" controls style="width:100%;display:none;border-radius:8px"></video>
-      </div>
-    </div>
-  </div>  <!-- Settings Modal -->  <div id="settings_modal" class="modal">
-    <div class="modalcard settings">
-      <h3>Ajustes</h3>
-      <p class="small">Puedes cambiar tu avatar o cerrar sesión.</p>
-      <div style="margin-top:12px;display:flex;gap:12px;align-items:center">
-        <input id="avatar_input" type="file" accept="image/*">
-        <button id="btn_save_avatar">Guardar avatar</button>
-      </div>
-      <div style="margin-top:12px">
-        <button id="btn_logout">Cerrar sesión</button>
-        <button id="btn_close_settings" class="ghost">Volver</button>
-      </div>
-    </div>
-  </div>  <script src="catflix-script.js"></script></body>
+<div id="login_box" class="hidden">
+  <input id="log_user" type="text" placeholder="Usuario">
+  <input id="log_pass" type="password" placeholder="Contraseña">
+  <button id="btn_login">Iniciar sesión</button>
+  <button id="show_register" class="ghost">Crear cuenta</button>
+</div>
+
+  </div>
+</div><!-- ---------------- TOPBAR ---------------- --><header class="topbar hidden" id="topbar">
+  <div class="logo"><img src="logo.png" width="42"><div>Catflix</div></div>
+  <nav>
+    <div id="nav_inicio" class="navlink active">Inicio</div>
+    <div id="nav_series" class="navlink">Series</div>
+    <div id="nav_pelis" class="navlink">Películas</div>
+  </nav>
+  <div class="spacer"></div>
+  <img id="avatar_top" class="avatar" src="default-avatar.png">
+  <button id="btn_settings" class="ghost">⚙</button>
+</header><!-- ---------------- HERO ---------------- --><section class="hero hidden" id="hero">
+  <div class="bigbanner" id="bigbanner" style="background-image:url('BigMovieSerie.png')">
+    <h2 id="bigbanner_title">Destacado</h2>
+  </div>
+</section><!-- ---------------- GRID ---------------- --><section id="grid" class="grid hidden"></section><!-- ---------------- MODAL MOVIE ---------------- --><div id="movie_modal" class="modal">
+  <div class="modalcard">
+    <div id="modal_banner" class="banner"></div>
+    <button id="btn_play">▶ Reproducir</button>
+    <video id="video_player" controls class="hidden"></video>
+    <button id="close_movie" class="ghost" style="margin-top:10px;width:100%">Cerrar</button>
+  </div>
+</div><!-- ---------------- SETTINGS ---------------- --><div id="settings_modal" class="modal">
+  <div class="modalcard" style="max-width:420px;text-align:center">
+    <h3>Ajustes</h3>
+    <img id="avatar_edit" src="default-avatar.png" class="avatar" style="width:90px;height:90px;margin:10px auto">
+    <input id="avatar_input" type="file">
+    <button id="save_avatar">Guardar Avatar</button>
+    <button id="logout" class="ghost">Cerrar Sesión</button>
+    <button id="close_settings" class="ghost" style="margin-top:10px">Cerrar</button>
+  </div>
+</div><!-- ---------------- INLINE JS ---------------- --><script>
+/* ----- SISTEMA COMPLETO EXCEPTO PELÍCULAS (que van en movies.js) ----- */
+const $ = id => document.getElementById(id);
+let user = JSON.parse(localStorage.getItem("catflix_user") || "null");
+
+function show(el){el.classList.remove("hidden")}function hide(el){el.classList.add("hidden")}
+
+function updateUI(){
+  $("avatar_top").src = user.avatar;
+  $("avatar_edit").src = user.avatar;
+  hide($("welcome"));
+  show($("topbar"));
+  show($("hero"));
+  show($("grid"));
+  loadMovies("inicio");
+}
+
+// Registro
+$("btn_register").onclick = ()=>{
+  const u = $("reg_user").value.trim();
+  const p = $("reg_pass").value.trim();
+  if(!u||!p) return alert("Completa los campos");
+  user = {username:u,password:p,avatar:"default-avatar.png"};
+  localStorage.setItem("catflix_user",JSON.stringify(user));
+  updateUI();
+};
+
+// Login
+$("btn_login").onclick = ()=>{
+  let stored = JSON.parse(localStorage.getItem("catflix_user")||"null");
+  if(!stored) return alert("No existe cuenta");
+  if($("log_user").value===stored.username && $("log_pass").value===stored.password){
+    user = stored;
+    updateUI();
+  } else alert("Datos incorrectos");
+};
+
+// Cambiar formularios
+$("show_login").onclick = ()=>{hide($("register_box"));show($("login_box"));};
+$("show_register").onclick = ()=>{hide($("login_box"));show($("register_box"));};
+
+// Settings
+$("btn_settings").onclick = ()=> $("settings_modal").classList.add("open");
+$("close_settings").onclick = ()=> $("settings_modal").classList.remove("open");
+
+// Guardar avatar
+$("save_avatar").onclick = ()=>{
+  const file = $("avatar_input").files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload =()=>{
+    user.avatar = reader.result;
+    localStorage.setItem("catflix_user",JSON.stringify(user));
+    $("avatar_top").src = user.avatar;
+    $("avatar_edit").src = user.avatar;
+  };
+  reader.readAsDataURL(file);
+};
+
+// Logout
+$("logout").onclick = ()=>{
+  localStorage.removeItem("catflix_user");
+  location.reload();
+};
+
+// Navegación
+$("nav_inicio").onclick = ()=>{setNav($("nav_inicio"));loadMovies("inicio")};
+$("nav_series").onclick = ()=>{setNav($("nav_series"));loadMovies("series")};
+$("nav_pelis").onclick = ()=>{setNav($("nav_pelis"));loadMovies("peliculas")};
+
+function setNav(active){
+  $("nav_inicio").classList.remove("active");
+  $("nav_series").classList.remove("active");
+  $("nav_pelis").classList.remove("active");
+  active.classList.add("active");
+}
+
+// ------ PELÍCULAS (SE CARGAN DESDE movies.js) ------
+// loadMovies(), openMovie(), moviesData[]
+
+// Modal película
+$("close_movie").onclick = ()=>{
+  $("video_player").pause();
+  $("movie_modal").classList.remove("open");
+};
+$("btn_play").onclick = ()=>{
+  $("video_player").classList.remove("hidden");
+  $("video_player").play();
+};
+
+// Auto login si existe
+if(user) updateUI();
+</script><!-- archivo separado obligatorio --><script src="movies.js"></script></body>
 </html>
