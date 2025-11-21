@@ -4,7 +4,7 @@ const moviesData = {
   inicio: [
     {
       title: "Tralalero Tralala Movie",
-      cover: "TralaleroTralalaMovie.png",
+      cover: "covers/TralaleroTralalaMovie.png",
       video: "videos/TralaleroTralalaMovie.mp4"
     },
     {
