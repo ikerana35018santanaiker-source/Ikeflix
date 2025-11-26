@@ -1,8 +1,5 @@
 const movies = [
-    "Interstellar",
-    "Sonic2",
-    "Shrek",
-    "FiveNightsAtFreddys"
+    "La Fiesta de Halloween que casi nos arruinó la vida..."
 ];
 
 
