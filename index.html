@@ -15,7 +15,7 @@
 }
 
 body {
-  background-color: #000;
+  background: #000;
   color: white;
   overflow-x: hidden;
 }
@@ -58,28 +58,25 @@ button:hover {
 
 .topbar {
   width: 100%;
-  padding: 20px;
+  padding: 18px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(5px);
   position: fixed;
   top: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(7px);
   z-index: 50;
-}
-
-.topbar button {
-  margin-left: 10px;
 }
 
 /* --------------------- HOME --------------------- */
 #big-banner {
   width: 100%;
-  height: 350px;
+  height: 340px;
   background-size: cover;
   background-position: center;
   margin-top: 80px;
+  border-bottom: 3px solid red;
 }
 
 .movie-row {
@@ -95,21 +92,21 @@ button:hover {
   display: flex;
   gap: 15px;
   overflow-x: auto;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
 }
 
 .movie-item {
-  width: 220px;
-  height: 120px;
+  width: 230px;
+  height: 130px;
   background-size: cover;
   background-position: center;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: 0.2s;
 }
 
 .movie-item:hover {
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
 /* --------------------- MOVIE VIEW --------------------- */
@@ -122,6 +119,7 @@ button:hover {
 
 #movie-banner {
   width: 80%;
+  max-width: 800px;
   border-radius: 20px;
 }
 
@@ -129,7 +127,27 @@ button:hover {
   margin-top: 20px;
 }
 
-/* --------------------- ANIM --------------------- */
+/* --------------------- SETTINGS --------------------- */
+#settings {
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.8);
+  backdrop-filter:blur(4px);
+  padding:40px;
+  text-align:center;
+  z-index:200;
+}
+
+#settings h2 {
+  margin-bottom: 20px;
+}
+
+#settings img {
+  border:3px solid white;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -157,11 +175,13 @@ button:hover {
 
   <!-- TOPBAR -->
   <div class="topbar">
-    <div>
-      <button onclick="goHome()">Inicio</button>
-    </div>
-    <div>
-      <button onclick="openSettings()">Ajustes</button>
+    <button onclick="goHome()">Inicio</button>
+
+    <div style="display:flex;gap:20px;align-items:center;">
+        <img id="profile-icon" 
+             src="default_icon.png" 
+             style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+        <button onclick="openSettings()">Ajustes</button>
     </div>
   </div>
 
@@ -181,22 +201,40 @@ button:hover {
     <br>
     <button id="play-btn">Reproducir</button>
   </div>
-
 </div>
 
-<!-- --------------------- JS (INTERNO) --------------------- -->
+<!-- --------------------- SETTINGS --------------------- -->
+<div id="settings">
+  <h2>Ajustes</h2>
+
+  <img id="settings-icon" 
+       src="default_icon.png"
+       style="width:110px;height:110px;border-radius:20px;object-fit:cover;">
+  
+  <br><br>
+
+  <input type="file" id="icon-upload" accept="image/*">
+
+  <br><br>
+
+  <button onclick="closeSettings()">Cerrar</button>
+  <button onclick="logout()">Cerrar Sesión</button>
+</div>
+
+
+<!-- --------------------- JS INTERNO --------------------- -->
 <script>
 // ---- NAVEGACIÓN ----
 function goLogin() {
-  document.getElementById("welcome-screen").style.display = "none";
-  document.getElementById("login-screen").style.display = "flex";
+  welcomeScreen.style.display = "none";
+  loginScreen.style.display = "flex";
 }
 
 function login() {
   const user = document.getElementById("user").value;
   const pass = document.getElementById("pass").value;
 
-  if (user.length < 1 || pass.length < 1) return alert("Completa los campos.");
+  if (!user || !pass) return alert("Completa los campos.");
 
   localStorage.setItem("cat_user", user);
   localStorage.setItem("cat_pass", pass);
@@ -205,26 +243,35 @@ function login() {
 }
 
 function loadApp() {
-  document.getElementById("welcome-screen").style.display = "none";
-  document.getElementById("login-screen").style.display = "none";
-  document.getElementById("app").style.display = "block";
+  welcomeScreen.style.display = "none";
+  loginScreen.style.display = "none";
+  app.style.display = "block";
 
-  loadMovies(); // Carga de movies.js
+  loadProfileIcon();
+  loadMovies(); // viene de movies.js
 }
 
 function goHome() {
-  document.getElementById("home").style.display = "block";
-  document.getElementById("movie-view").style.display = "none";
+  home.style.display = "block";
+  movieView.style.display = "none";
 }
 
 function openSettings() {
-  const opc = confirm("¿Cerrar sesión?");
-  if (opc) {
-    localStorage.removeItem("cat_user");
-    localStorage.removeItem("cat_pass");
-    location.reload();
-  }
+  settings.style.display = "block";
+  document.getElementById("settings-icon").src =
+    localStorage.getItem("cat_icon") || "default_icon.png";
 }
+
+function closeSettings() {
+  settings.style.display = "none";
+}
+
+// ---- LOGOUT ----
+function logout() {
+  localStorage.clear();
+  location.reload();
+}
+
 
 // ---- AUTO LOGIN ----
 window.onload = () => {
@@ -233,10 +280,31 @@ window.onload = () => {
   }
 };
 
-// ---- MOVIE VIEW ----
+
+// --------------------- PROFILE ICON ---------------------
+function loadProfileIcon() {
+  const icon = localStorage.getItem("cat_icon") || "default_icon.png";
+  document.getElementById("profile-icon").src = icon;
+  document.getElementById("settings-icon").src = icon;
+}
+
+document.getElementById("icon-upload").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    localStorage.setItem("cat_icon", event.target.result);
+    loadProfileIcon();
+  };
+  reader.readAsDataURL(file);
+});
+
+
+// --------------------- MOVIE VIEW ---------------------
 function openMovie(name) {
-  document.getElementById("home").style.display = "none";
-  document.getElementById("movie-view").style.display = "block";
+  home.style.display = "none";
+  movieView.style.display = "block";
 
   const banner = `Peliculas/${name}/Banner.png`;
   const movie = `Peliculas/${name}/Movie.mp4`;
@@ -249,7 +317,7 @@ function openMovie(name) {
 }
 </script>
 
-<!-- LOAD AUTO-MOVIES -->
+<!-- --------------------- JS EXTERNO MOVIES --------------------- -->
 <script src="movies.js"></script>
 
 </body>
