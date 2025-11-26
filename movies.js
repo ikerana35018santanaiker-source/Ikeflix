@@ -1,30 +1,33 @@
-// Lista de carpetas dentro de /Peliculas
-// Agrega o quita nombres de carpeta según tu contenido
 const movies = [
-  "FiveNightsAtFreddys",
-  "Sonic2",
-  "Interstellar",
-  "Shrek"
+    "Interstellar",
+    "Sonic2",
+    "Shrek",
+    "FiveNightsAtFreddys"
 ];
 
 function loadMovies() {
-  const container = document.getElementById("movies-list");
-  container.innerHTML = "";
+    const home = document.getElementById("home-screen");
+    home.innerHTML = "";
 
-  movies.forEach(name => {
-    const banner = `Peliculas/${name}/Banner.png`;
+    // Banner principal -> usa la primera película
+    home.innerHTML += `
+        <div class="big-banner slide-up" style="background-image:url('${movies[0]}.png')"></div>
+        <h2 class="section-title">Películas</h2>
+        <div class="movies-row" id="movies-row"></div>
+    `;
 
-    const item = document.createElement("div");
-    item.className = "movie-item";
-    item.style.backgroundImage = `url(${banner})`;
-    item.onclick = () => openMovie(name);
+    const row = document.getElementById("movies-row");
 
-    container.appendChild(item);
-  });
+    movies.forEach(m => {
+        row.innerHTML += `
+            <div class="movie-item slide-up">
+                <img src="${m}.png" onclick="openMovie('${m}')">
+            </div>
+        `;
+    });
+}
 
-  // Big Banner automático
-  if (movies.length > 0) {
-    document.getElementById("big-banner").style.backgroundImage =
-      `url(Peliculas/${movies[0]}/Banner.png)`;
-  }
+function openMovie(name){
+    // Abre directamente el archivo mp4
+    window.open(name + ".mp4", "_blank");
 }
