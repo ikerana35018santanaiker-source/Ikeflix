@@ -5,29 +5,56 @@ const movies = [
     "FiveNightsAtFreddys"
 ];
 
+
+// ==============================
+// CARGA DE LA HOME
+// ==============================
+
 function loadMovies() {
-    const home = document.getElementById("home-screen");
-    home.innerHTML = "";
+    const grid = document.getElementById("movieGrid");
+    if (!grid) return;
 
-    // Banner principal -> usa la primera película
-    home.innerHTML += `
-        <div class="big-banner slide-up" style="background-image:url('${movies[0]}.png')"></div>
-        <h2 class="section-title">Películas</h2>
-        <div class="movies-row" id="movies-row"></div>
-    `;
+    grid.innerHTML = ""; 
 
-    const row = document.getElementById("movies-row");
+    movies.forEach(movieName => {
+        const card = document.createElement("div");
+        card.className = "movie-card";
 
-    movies.forEach(m => {
-        row.innerHTML += `
-            <div class="movie-item slide-up">
-                <img src="${m}.png" onclick="openMovie('${m}')">
+        card.innerHTML = `
+            <img src="${movieName}.png" 
+                 alt="${movieName}"
+                 class="movie-banner"
+                 onerror="this.src='fallback.png'">
+
+            <div class="movie-info">
+                <h3>${movieName}</h3>
+                <button class="play-btn" onclick="playMovie('${movieName}')">
+                    ▶ Reproducir
+                </button>
             </div>
         `;
+
+        grid.appendChild(card);
     });
 }
 
-function openMovie(name){
-    // Abre directamente el archivo mp4
-    window.open(name + ".mp4", "_blank");
+
+// ==============================
+// REPRODUCIR PELÍCULA
+// ==============================
+
+function playMovie(name) {
+    const url = `${name}.mp4`;
+    window.open(url, "_blank");
 }
+
+
+// ==============================
+// AUTO-EJECUCIÓN
+// ==============================
+
+window.addEventListener("DOMContentLoaded", () => {
+    // Si estamos logueados y en la home, cargar películas
+    const logged = localStorage.getItem("loggedUser");
+    if (logged) loadMovies();
+});
