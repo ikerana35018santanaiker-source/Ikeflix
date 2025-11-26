@@ -1,5 +1,9 @@
+// Lista de películas (friendlyName y fileName)
 const movies = [
-    "La Fiesta de Halloween que casi nos arruinó la vida..."
+    {
+        title: "La Fiesta de Halloween que casi nos arruinó la vida...",
+        file: "fiesta_halloween"
+    }
 ];
 
 
@@ -13,19 +17,21 @@ function loadMovies() {
 
     grid.innerHTML = ""; 
 
-    movies.forEach(movieName => {
+    movies.forEach(movie => {
+        const banner = movie.file + ".png";
+
         const card = document.createElement("div");
         card.className = "movie-card";
 
         card.innerHTML = `
-            <img src="${movieName}.png" 
-                 alt="${movieName}"
+            <img src="${banner}" 
+                 alt="${movie.title}"
                  class="movie-banner"
                  onerror="this.src='fallback.png'">
 
             <div class="movie-info">
-                <h3>${movieName}</h3>
-                <button class="play-btn" onclick="playMovie('${movieName}')">
+                <h3>${movie.title}</h3>
+                <button class="play-btn" onclick="playMovie('${movie.file}')">
                     ▶ Reproducir
                 </button>
             </div>
@@ -40,8 +46,8 @@ function loadMovies() {
 // REPRODUCIR PELÍCULA
 // ==============================
 
-function playMovie(name) {
-    const url = `${name}.mp4`;
+function playMovie(fileName) {
+    const url = `${fileName}.mp4`;
     window.open(url, "_blank");
 }
 
@@ -51,7 +57,6 @@ function playMovie(name) {
 // ==============================
 
 window.addEventListener("DOMContentLoaded", () => {
-    // Si estamos logueados y en la home, cargar películas
     const logged = localStorage.getItem("loggedUser");
     if (logged) loadMovies();
 });
