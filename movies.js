@@ -1,28 +1,23 @@
-// ================================================
-// LISTA DE TÍTULOS DE PELÍCULAS (SOLO NOMBRES)
-// ================================================
+// Lista de títulos bonitos
 const movies = [
-    "La Fiesta de Halloween que casi nos arruinó la vida..."
+    "La Fiesta de Halloween que casi nos arruinó la vida...",
+    "Sonic 2: La Película",
+    "Interstellar",
+    "Shrek Para Siempre"
 ];
 
-
-// ================================================
-// FUNCIÓN PARA GENERAR NOMBRES DE ARCHIVO SEGUROS
-// ================================================
+// Función que convierte título en un nombre de archivo seguro
 function slugify(text) {
     return text
-        .normalize("NFD")                     // separa tildes
-        .replace(/[\u0300-\u036f]/g, "")      // elimina tildes
-        .replace(/[^a-zA-Z0-9 ]/g, "")        // elimina símbolos
+        .normalize("NFD")                 // separa acentos
+        .replace(/[\u0300-\u036f]/g, "")  // quita acentos
+        .replace(/[^a-zA-Z0-9 ]/g, "")    // quita símbolos raros
         .trim()
-        .replace(/\s+/g, "_")                 // espacios → _
-        .toLowerCase();                       // minúsculas
+        .replace(/\s+/g, "_")             // espacios -> _
+        .toLowerCase();                   // minúsculas
 }
 
-
-// ================================================
-// CARGA DE LA HOME
-// ================================================
+// Cargar películas
 function loadMovies() {
     const grid = document.getElementById("movieGrid");
     if (!grid) return;
@@ -30,44 +25,29 @@ function loadMovies() {
     grid.innerHTML = "";
 
     movies.forEach(title => {
-        const file = slugify(title);        // convierte el título en archivo
+        const file = slugify(title);
         const banner = `${file}.png`;
 
         const card = document.createElement("div");
         card.className = "movie-card";
 
         card.innerHTML = `
-            <img src="${banner}"
-                 alt="${title}"
-                 class="movie-banner"
-                 onerror="this.src='fallback.png'">
-
+            <img src="${banner}" alt="${title}" class="movie-banner" onerror="this.src='fallback.png'">
             <div class="movie-info">
                 <h3>${title}</h3>
-
-                <button class="play-btn" onclick="playMovie('${file}')">
-                    ▶ Reproducir
-                </button>
+                <button class="play-btn" onclick="playMovie('${file}')">▶ Reproducir</button>
             </div>
         `;
-
         grid.appendChild(card);
     });
 }
 
-
-// ================================================
-// REPRODUCIR PELÍCULA
-// ================================================
+// Reproducir película
 function playMovie(file) {
-    const url = `${file}.mp4`;
-    window.open(url, "_blank");
+    window.open(`${file}.mp4`, "_blank");
 }
 
-
-// ================================================
-// AUTO-EJECUCIÓN
-// ================================================
+// Auto-ejecución al cargar la página
 window.addEventListener("DOMContentLoaded", () => {
     const logged = localStorage.getItem("loggedUser");
     if (logged) loadMovies();
