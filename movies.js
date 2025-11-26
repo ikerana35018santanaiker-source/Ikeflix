@@ -1,43 +1,19 @@
-// Lista de títulos bonitos que quieres mostrar
-const moviesTitles = [
-    "La Fiesta de Halloween que casi nos arruinó la vida..."
+const movies = [
+    { title: "La Fiesta de Halloween que casi nos arruinó la vida...", file: "la_fiesta_de_halloween_que_casi_nos_arruino_la_vida" },
+    { title: "Interstellar", file: "interstellar" },
+    { title: "Sonic 2: La Película", file: "sonic_2_la_pelicula" }
 ];
 
-// Función para generar nombre de archivo seguro
-function slugify(text) {
-    return text
-        .normalize("NFD")                   // separa acentos
-        .replace(/[\u0300-\u036f]/g, "")    // quita tildes
-        .replace(/[^a-zA-Z0-9 ]/g, "")      // quita caracteres raros
-        .trim()
-        .replace(/\s+/g, "_")               // espacios → _
-        .toLowerCase();
-}
-
-// Genera array final con títulos y nombres de archivo
-const movies = moviesTitles.map(title => ({
-    title: title,
-    file: slugify(title)
-}));
-
-// Función para cargar las películas en la UI
 function loadMovies() {
     const grid = document.getElementById("movieGrid");
     if (!grid) return;
-
-    if (!movies || movies.length === 0) {
-        grid.innerHTML = "<p>No hay películas definidas. Edita movies.js y añade nombres.</p>";
-        return;
-    }
-
     grid.innerHTML = "";
 
     movies.forEach(movie => {
         const card = document.createElement("div");
         card.className = "movie-card";
-
         card.innerHTML = `
-            <img src="${movie.file}.png" alt="${movie.title}" class="movie-banner" onerror="this.src='fallback.png'">
+            <img src="${movie.file}.png" alt="${movie.title}" class="movie-banner">
             <div class="movie-info">
                 <h3>${movie.title}</h3>
                 <button class="play-btn" onclick="playMovie('${movie.file}')">▶ Reproducir</button>
@@ -47,13 +23,10 @@ function loadMovies() {
     });
 }
 
-// Función para reproducir película
 function playMovie(file) {
-    window.open(`${file}.mp4`, "_blank");
+    window.location.href = `${file}.mp4`; // mejor que open para Netlify
 }
 
-// Auto-ejecución al cargar la página
 window.addEventListener("DOMContentLoaded", () => {
-    const logged = localStorage.getItem("loggedUser");
-    if (logged) loadMovies();
+    loadMovies();
 });
