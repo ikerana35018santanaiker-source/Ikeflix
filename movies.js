@@ -1,14 +1,14 @@
 // Lista de carpetas dentro de /Peliculas
+// Agrega o quita nombres de carpeta según tu contenido
 const movies = [
   "FiveNightsAtFreddys",
   "Sonic2",
-  "Interstellar"
+  "Interstellar",
+  "Shrek"
 ];
 
-// AUTO-CARGA
 function loadMovies() {
   const container = document.getElementById("movies-list");
-
   container.innerHTML = "";
 
   movies.forEach(name => {
@@ -22,7 +22,7 @@ function loadMovies() {
     container.appendChild(item);
   });
 
-  // Big Banner elige la primera película
+  // Big Banner automático
   if (movies.length > 0) {
     document.getElementById("big-banner").style.backgroundImage =
       `url(Peliculas/${movies[0]}/Banner.png)`;
