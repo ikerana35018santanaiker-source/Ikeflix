@@ -1,500 +1,424 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Ikeflix</title>
-<link rel="shortcut icon" href="Logo.png">
-<style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ikeflix</title>
+  <link rel="icon" href="Logo.png">
 
-/* --------------------------- */
-/*         RESET              */
-/* --------------------------- */
+  <style>
+    /* ---------- RESET / VARIABLES ---------- */
+    :root{
+      --bg:#040608;
+      --panel:#071021;
+      --muted:#9fb0c4;
+      --accent:#e50914;
+      --glass: rgba(255,255,255,0.03);
+      --radius:12px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg,var(--bg), #071226);
+      color:#eaf3fb;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
-}
+    /* ---------- AUTH SCREEN ---------- */
+    #auth-root{
+      position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+      background: linear-gradient(180deg, rgba(2,6,12,0.6), rgba(2,6,12,0.9));
+      z-index:100;
+      padding:20px;
+    }
+    .auth-card{
+      width:360px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
+      padding:26px; border-radius:16px; box-shadow:0 12px 40px rgba(0,0,0,0.7);
+      text-align:center; transform:translateY(8px); opacity:0; animation:authIn .36s forwards;
+    }
+    @keyframes authIn{to{transform:none;opacity:1}}
+    .auth-card img{width:110px;margin:0 auto 12px;display:block}
+    .auth-card h2{margin:6px 0 10px;font-size:20px}
+    .auth-card .sub{color:var(--muted);font-size:13px;margin-bottom:12px}
 
-body {
-  background: #000;
-  color: #fff;
-  overflow-x: hidden;
-}
+    .field{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(0,0,0,0.35);color:inherit;margin:8px 0}
+    .btn{width:100%;padding:11px;border-radius:10px;border:0;background:var(--accent);color:white;font-weight:700;cursor:pointer;margin-top:10px}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+    .link{margin-top:10px;color:var(--muted);font-size:13px;cursor:pointer}
 
-/* --------------------------- */
-/*      ANIMACIONES GLOBALES  */
-/* --------------------------- */
+    /* ---------- PROFILE SELECT ---------- */
+    #profile-root{display:none;padding-top:80px;text-align:center}
+    .profiles{display:flex;gap:28px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+    .profile-card{width:140px;cursor:pointer;transition:transform .18s, box-shadow .18s;text-align:center}
+    .profile-card img{width:120px;height:120px;object-fit:cover;border-radius:12px;border:3px solid rgba(255,255,255,0.06)}
+    .profile-card p{margin-top:8px;font-weight:600;color:#fff}
 
-.fade-in {
-  animation: fadein 0.5s ease forwards;
-  opacity: 0;
-}
+    /* ---------- TOPBAR ---------- */
+    header.topbar{
+      position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:linear-gradient(180deg, rgba(0,0,0,0.8), rgba(0,0,0,0.2));backdrop-filter:blur(6px);
+    }
+    .brand{display:flex;gap:12px;align-items:center}
+    .brand img{height:44px;width:44px;border-radius:8px;object-fit:cover}
+    nav.main{display:flex;gap:14px;align-items:center}
+    .nav-btn{padding:8px 12px;border-radius:8px;color:var(--muted);cursor:pointer;font-weight:600}
+    .nav-btn:hover{color:white;background:rgba(255,255,255,0.02)}
+    .profile-mini{display:flex;gap:12px;align-items:center}
+    #mini-avatar{width:38px;height:38px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,255,255,0.06)}
 
-@keyframes fadein {
-  to { opacity: 1; }
-}
+    /* ---------- HERO / BANNER ---------- */
+    #home{display:none}
+    .hero{padding:20px 24px}
+    .big-banner{
+      width:100%;height:52vh;border-radius:12px;background:#0b1116;background-size:cover;background-position:center;display:flex;align-items:end;padding:28px;box-shadow:inset 0 -60px 120px rgba(0,0,0,0.6)
+    }
+    .hero-title{font-size:28px;font-weight:800;text-shadow:0 6px 22px rgba(0,0,0,0.6)}
 
-.slide-up {
-  animation: slideup 0.5s ease forwards;
-  opacity: 0;
-  transform: translateY(20px);
-}
+    /* ---------- ROWS ---------- */
+    .section{padding:18px 24px}
+    .section h3{margin:4px 0 12px;color:#f2f6fb;font-size:18px}
+    .row{display:flex;gap:14px;overflow:auto;padding-bottom:12px}
+    .tile{flex:0 0 220px;border-radius:10px;overflow:hidden;background:var(--panel);cursor:pointer;transition:transform .22s, box-shadow .22s}
+    .tile img{width:100%;height:128px;object-fit:cover;display:block}
+    .tile:hover{transform:translateY(-8px);box-shadow:0 18px 30px rgba(0,0,0,0.6)}
 
-@keyframes slideup {
-  to { opacity: 1; transform: translateY(0); }
-}
+    /* ---------- MODAL PLAYER ---------- */
+    .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);z-index:90;opacity:0;pointer-events:none;transition:opacity .18s}
+    .modal.open{opacity:1;pointer-events:auto}
+    .player-card{width:92%;max-width:980px;background:#071018;border-radius:12px;padding:16px;box-shadow:0 14px 40px rgba(0,0,0,0.6)}
+    .player-banner{width:100%;height:360px;background-size:cover;background-position:center;border-radius:8px}
+    video#player{width:100%;margin-top:12px;border-radius:8px;background:#000}
 
-/* --------------------------- */
-/*       PANTALLA LOGIN       */
-/* --------------------------- */
+    /* ---------- SETTINGS PANEL ---------- */
+    #settings{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;padding:40px;text-align:center}
+    .settings-card{max-width:520px;margin:30px auto;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.1));padding:18px;border-radius:12px}
+    .avatar-large{width:120px;height:120px;border-radius:12px;object-fit:cover;border:3px solid rgba(255,255,255,0.06)}
 
-#auth-screen {
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  position: fixed;
-  top: 0;
-  left: 0;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(180deg, #000 40%, #111);
-  z-index: 100;
-}
+    /* ---------- small screens ---------- */
+    @media (max-width:760px){
+      .hero-title{font-size:20px}
+      .big-banner{height:36vh}
+      .tile img{height:100px}
+      .profile-card img{width:96px;height:96px}
+    }
 
-.auth-box {
-  width: 380px;
-  padding: 40px;
-  background: rgba(0,0,0,0.75);
-  border-radius: 15px;
-  box-shadow: 0 0 40px rgba(255,0,0,0.15);
-  animation: fadein 0.5s ease forwards;
-}
-
-.auth-box img {
-  width: 150px;
-  margin: 0 auto 20px auto;
-  display: block;
-}
-
-.auth-box input {
-  width: 100%;
-  margin: 8px 0;
-  padding: 12px;
-  border-radius: 6px;
-  border: none;
-  outline: none;
-  background: #222;
-  color: white;
-  font-size: 15px;
-}
-
-.auth-box button {
-  width: 100%;
-  margin-top: 12px;
-  padding: 12px;
-  background: red;
-  border: none;
-  font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.auth-box button:hover {
-  background: #c40000;
-}
-
-/* Switch login / register */
-.switch {
-  margin-top: 10px;
-  text-align: center;
-  font-size: 14px;
-  opacity: 0.7;
-  cursor: pointer;
-}
-
-/* --------------------------- */
-/*       SELECCION PERFIL     */
-/* --------------------------- */
-
-#profile-screen {
-  display: none;
-  position: fixed;
-  width: 100%;
-  height: 100vh;
-  background: #000;
-  top: 0;
-  left: 0;
-  text-align: center;
-  padding-top: 130px;
-  z-index: 90;
-}
-
-.profile-container {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  margin-top: 40px;
-}
-
-.profile {
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.profile img {
-  width: 110px;
-  height: 110px;
-  border-radius: 10px;
-  object-fit: cover;
-  border: 3px solid #fff;
-}
-
-.profile:hover {
-  transform: scale(1.05);
-}
-
-/* --------------------------- */
-/*        TOPBAR NAV          */
-/* --------------------------- */
-
-.topbar {
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 15px 30px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.9), transparent);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 50;
-}
-
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.topbar-left img {
-  height: 50px;
-}
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.topbar-right button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 17px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.topbar-right button:hover {
-  opacity: 0.7;
-}
-
-#profile-icon {
-  width: 45px;
-  height: 45px;
-  border-radius: 8px;
-  object-fit: cover;
-}
-
-/* --------------------------- */
-/*         HOME UI            */
-/* --------------------------- */
-
-#home-screen {
-  padding-top: 110px;
-}
-
-.big-banner {
-  width: 100%;
-  height: 50vh;
-  background-size: cover;
-  background-position: center;
-  margin-bottom: 20px;
-}
-
-.section-title {
-  margin: 15px 30px;
-  font-size: 23px;
-}
-
-.movies-row {
-  display: flex;
-  overflow-x: auto;
-  padding-left: 30px;
-  gap: 18px;
-}
-
-.movie-item img {
-  width: 230px;
-  height: 130px;
-  border-radius: 8px;
-  object-fit: cover;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.movie-item img:hover {
-  transform: scale(1.05);
-}
-
-/* --------------------------- */
-/*       SETTINGS PANEL       */
-/* --------------------------- */
-
-#settings-panel {
-  display: none;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.85);
-  top: 0;
-  left: 0;
-  z-index: 200;
-  padding-top: 80px;
-  text-align: center;
-}
-
-#settings-panel img {
-  width: 160px;
-  height: 160px;
-  border-radius: 15px;
-  border: 3px solid #fff;
-  object-fit: cover;
-}
-
-.settings-btn {
-  margin-top: 25px;
-  padding: 15px 40px;
-  background: red;
-  border: none;
-  font-size: 18px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-</style>
+  </style>
 </head>
 <body>
 
-<!-- ----------------------------- -->
-<!--        PANTALLA LOGIN        -->
-<!-- ----------------------------- -->
+  <!-- AUTH: LOGIN / REGISTER -->
+  <div id="auth-root">
+    <div class="auth-card" role="dialog" aria-labelledby="auth-title">
+      <img src="Logo.png" alt="Ikeflix logo">
+      <h2 id="auth-title">Iniciar sesión</h2>
+      <div class="sub">Accede a Ikeflix o crea una cuenta nueva</div>
 
-<div id="auth-screen">
-  <div class="auth-box fade-in">
+      <input id="input-user" class="field" placeholder="Usuario">
+      <input id="input-pass" class="field" placeholder="Contraseña" type="password">
 
-    <img src="Logo.png">
-
-    <h2 id="auth-title" style="text-align:center;margin-bottom:12px;">Iniciar sesión</h2>
-
-    <input id="auth-user" placeholder="Usuario">
-    <input id="auth-pass" placeholder="Contraseña" type="password">
-
-    <button onclick="authAction()">Continuar</button>
-
-    <div class="switch" onclick="switchAuth()">¿No tienes cuenta? Regístrate</div>
-
-  </div>
-</div>
-
-<!-- ----------------------------- -->
-<!--       SELECCION PERFIL       -->
-<!-- ----------------------------- -->
-
-<div id="profile-screen" class="fade-in">
-
-  <h1>¿Quién está viendo Ikeflix?</h1>
-
-  <div class="profile-container" id="profile-container"></div>
-
-</div>
-
-<!-- ----------------------------- -->
-<!--             HOME             -->
-<!-- ----------------------------- -->
-
-<div class="topbar">
-  <div class="topbar-left">
-    <img src="Logo.png">
-    <button onclick="goHome()">Inicio</button>
+      <button id="auth-btn" class="btn" onclick="handleAuth()">Continuar</button>
+      <div id="auth-switch" class="link" onclick="toggleAuth()">¿No tienes cuenta? Regístrate</div>
+    </div>
   </div>
 
-  <div class="topbar-right">
-    <button onclick="openSettings()">Ajustes</button>
-    <img id="profile-icon" src="default.png">
+  <!-- PROFILE SELECT -->
+  <div id="profile-root">
+    <h1 style="font-size:28px;margin-top:18px">¿Quién está viendo Ikeflix?</h1>
+    <div class="profiles" id="profiles-list" aria-live="polite"></div>
+    <div style="margin-top:22px">
+      <button class="btn secondary" onclick="addProfile()">Añadir perfil</button>
+    </div>
   </div>
-</div>
 
-<div id="home-screen"></div>
+  <!-- MAIN APP -->
+  <header class="topbar" role="navigation" aria-label="Ikeflix topbar">
+    <div class="brand">
+      <img src="Logo.png" alt="Ikeflix logo">
+      <div style="font-weight:800;letter-spacing:.6px;font-size:18px">Ikeflix</div>
+    </div>
 
-<!-- ----------------------------- -->
-<!--           SETTINGS           -->
-<!-- ----------------------------- -->
+    <nav class="main" role="menubar" aria-label="Main">
+      <div class="nav-btn" onclick="goHome()">Inicio</div>
+      <div class="nav-btn" onclick="openSettings()">Ajustes</div>
+    </nav>
 
-<div id="settings-panel">
+    <div class="profile-mini">
+      <div id="greeting" style="font-weight:700;color:var(--muted)">Hola</div>
+      <img id="mini-avatar" src="default.png" alt="avatar">
+    </div>
+  </header>
 
-  <h1>Ajustes</h1>
+  <!-- HOME -->
+  <main id="home" aria-live="polite">
+    <section class="hero">
+      <div class="big-banner" id="big-banner" style="background-image:url('default_banner.png')">
+        <div style="color:white"><div class="hero-title" id="hero-title">Destacado</div></div>
+      </div>
+    </section>
 
-  <h3>Icono de perfil</h3>
-  <img id="settings-icon" src="default.png"><br><br>
+    <section class="section">
+      <h3>Películas</h3>
+      <div class="row" id="movies-row" role="list"></div>
+    </section>
+  </main>
 
-  <input type="file" id="icon-upload" accept="image/*"><br><br>
+  <!-- PLAYER MODAL -->
+  <div id="player-modal" class="modal" role="dialog" aria-hidden="true" aria-label="Reproductor">
+    <div class="player-card">
+      <div id="player-banner" class="player-banner" style="background-image:url('default_banner.png')"></div>
+      <video id="player" controls></video>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+        <button class="btn secondary" onclick="closePlayer()">Cerrar</button>
+      </div>
+    </div>
+  </div>
 
-  <button class="settings-btn" onclick="logout()">Cerrar sesión</button><br><br>
-  <button class="settings-btn" onclick="closeSettings()" style="background:#444;">Cerrar</button>
+  <!-- SETTINGS -->
+  <div id="settings" aria-hidden="true">
+    <div class="settings-card">
+      <h2>Ajustes de perfil</h2>
+      <img id="settings-avatar" class="avatar-large" src="default.png" alt="avatar">
+      <div style="margin-top:12px">
+        <input id="avatar-uploader" type="file" accept="image/*">
+      </div>
+      <div style="margin-top:16px">
+        <button class="btn" onclick="saveAvatar()">Guardar avatar</button>
+        <button class="btn secondary" onclick="closeSettings()">Volver</button>
+      </div>
+      <div style="margin-top:14px">
+        <button class="btn secondary" onclick="signOut()">Cerrar sesión</button>
+      </div>
+    </div>
+  </div>
 
-</div>
+  <!-- movies.js externo (debe definir `movies` array o puedes dejarlo vacío y editar aquí) -->
+  <script src="movies.js"></script>
 
-<script src="movies.js"></script>
+  <script>
+  /* ----------------------
+     Estado y utilidades
+     ---------------------- */
+  const authRoot = document.getElementById('auth-root');
+  const profileRoot = document.getElementById('profile-root');
+  const homeRoot = document.getElementById('home');
+  const playerModal = document.getElementById('player-modal');
+  const player = document.getElementById('player');
 
-<script>
+  function q(id){return document.getElementById(id)}
 
-/* ------------------------------ */
-/*  LOGIN / REGISTER LOGIC        */
-/* ------------------------------ */
+  /* ----------------------
+     AUTH / REGISTER
+     ---------------------- */
+  let isRegister = false;
+  function toggleAuth(){
+    isRegister = !isRegister;
+    q('auth-title').innerText = isRegister ? 'Registro' : 'Iniciar sesión';
+    q('auth-btn').innerText = isRegister ? 'Crear cuenta' : 'Continuar';
+    q('auth-switch').innerText = isRegister ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate';
+  }
 
-let mode = "login";
+  function handleAuth(){
+    const user = q('input-user').value.trim();
+    const pass = q('input-pass').value.trim();
+    if(!user || !pass) return alert('Rellena usuario y contraseña');
 
-function switchAuth() {
-  mode = (mode === "login") ? "register" : "login";
-  document.getElementById("auth-title").innerText =
-      mode === "login" ? "Iniciar sesión" : "Registro";
-  document.querySelector(".switch").innerText =
-      mode === "login" ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión";
-}
-
-function authAction() {
-  const user = document.getElementById("auth-user").value;
-  const pass = document.getElementById("auth-pass").value;
-
-  if (mode === "register") {
-    localStorage.setItem("ikeflix_user", user);
-    localStorage.setItem("ikeflix_pass", pass);
-    createDefaultProfiles();
-    alert("Cuenta creada.");
-    switchAuth();
-  } else {
-    if (user === localStorage.getItem("ikeflix_user") &&
-        pass === localStorage.getItem("ikeflix_pass")) {
-
-      document.getElementById("auth-screen").style.display = "none";
-      loadProfiles();
+    if(isRegister){
+      // Guardar credenciales simples (local demo)
+      localStorage.setItem('ike_user', user);
+      localStorage.setItem('ike_pass', pass);
+      // perfiles por defecto
+      localStorage.setItem('ike_profiles', JSON.stringify([{name:user, icon:'default.png'}]));
+      alert('Cuenta creada. Inicia sesión.');
+      toggleAuth();
+      q('input-pass').value = '';
     } else {
-      alert("Datos incorrectos.");
+      const storedUser = localStorage.getItem('ike_user');
+      const storedPass = localStorage.getItem('ike_pass');
+      if(user === storedUser && pass === storedPass){
+        // avanzar a selección perfiles
+        authRoot.style.display = 'none';
+        loadProfilesUI();
+      } else {
+        alert('Usuario o contraseña incorrectos');
+      }
     }
   }
-}
 
-/* ------------------------------ */
-/*  PERFILES                      */
-/* ------------------------------ */
+  /* ----------------------
+     PERFILES
+     ---------------------- */
+  function loadProfilesUI(){
+    profileRoot.style.display = 'block';
+    const list = q('profiles-list');
+    list.innerHTML = '';
+    const profiles = JSON.parse(localStorage.getItem('ike_profiles') || '[]');
+    profiles.forEach((p,i)=>{
+      const div = document.createElement('div');
+      div.className = 'profile-card';
+      div.innerHTML = `<img src="${p.icon}" alt="${p.name}"><p>${p.name}</p>`;
+      div.onclick = ()=> selectProfile(i);
+      list.appendChild(div);
+    });
+  }
 
-function createDefaultProfiles() {
-  const profiles = [
-    { name:"Tú", icon:"default.png" }
-  ];
-  localStorage.setItem("ikeflix_profiles", JSON.stringify(profiles));
-}
+  function selectProfile(index){
+    const profiles = JSON.parse(localStorage.getItem('ike_profiles')||'[]');
+    const profile = profiles[index];
+    localStorage.setItem('ike_active', index);
+    q('mini-avatar').src = profile.icon;
+    q('greeting').innerText = 'Hola, ' + profile.name;
+    profileRoot.style.display = 'none';
+    // mostrar home
+    homeRoot.style.display = 'block';
+    renderMoviesFromMoviesArray();
+  }
 
-function loadProfiles() {
-  document.getElementById("profile-screen").style.display = "block";
+  function addProfile(){
+    const name = prompt('Nombre del perfil:') || ('Perfil ' + (Math.floor(Math.random()*99)));
+    const profiles = JSON.parse(localStorage.getItem('ike_profiles') || '[]');
+    profiles.push({name, icon:'default.png'});
+    localStorage.setItem('ike_profiles', JSON.stringify(profiles));
+    loadProfilesUI();
+  }
 
-  const list = document.getElementById("profile-container");
-  list.innerHTML = "";
+  /* ----------------------
+     SETTINGS / AVATAR
+     ---------------------- */
 
-  const profiles = JSON.parse(localStorage.getItem("ikeflix_profiles"));
+  function openSettings(){
+    const active = localStorage.getItem('ike_active');
+    if(active === null){ alert('Selecciona perfil primero'); return; }
+    const profiles = JSON.parse(localStorage.getItem('ike_profiles')||'[]');
+    q('settings-avatar').src = profiles[active].icon;
+    q('settings').style.display = 'block';
+  }
 
-  profiles.forEach((p,i)=>{
-    list.innerHTML += `
-      <div class="profile fade-in" onclick="selectProfile(${i})">
-        <img src="${p.icon}">
-        <p>${p.name}</p>
-      </div>
-    `;
+  function closeSettings(){ q('settings').style.display = 'none'; }
+
+  function saveAvatar(){
+    const fileInput = q('avatar-uploader');
+    if(!fileInput.files || !fileInput.files[0]) return alert('Selecciona una imagen');
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const data = e.target.result;
+      const active = parseInt(localStorage.getItem('ike_active')||0);
+      const profiles = JSON.parse(localStorage.getItem('ike_profiles')||'[]');
+      profiles[active].icon = data;
+      localStorage.setItem('ike_profiles', JSON.stringify(profiles));
+      q('mini-avatar').src = data;
+      q('settings-avatar').src = data;
+      // update profile list UI
+      loadProfilesUI();
+      alert('Icono guardado');
+    };
+    reader.readAsDataURL(fileInput.files[0]);
+  }
+
+  function signOut(){
+    localStorage.removeItem('ike_active');
+    localStorage.removeItem('ike_profiles');
+    localStorage.removeItem('ike_user');
+    localStorage.removeItem('ike_pass');
+    location.reload();
+  }
+
+  /* ----------------------
+     MOVIES RENDER (usa variable global `movies`)
+     movies.js debe definir `movies` array (ej: ["Interstellar","Sonic2"])
+     ---------------------- */
+
+  function renderMoviesFromMoviesArray(){
+    // si no existe movies (movies.js no cargado), espera un momento
+    if(!window.movies){
+      // intenta esperar hasta 2s
+      let tries = 0;
+      const t = setInterval(()=>{
+        tries++;
+        if(window.movies || tries>40){ clearInterval(t); renderMoviesNow(); }
+      },50);
+    } else renderMoviesNow();
+  }
+
+  function renderMoviesNow(){
+    const listEl = document.getElementById('movies-row');
+    listEl.innerHTML = '';
+    const arr = Array.isArray(window.movies) ? window.movies : [];
+
+    if(arr.length === 0){
+      listEl.innerHTML = '<div style="color:var(--muted);padding:18px">No hay películas definidas. Edita movies.js y añade nombres.</div>';
+      q('big-banner').style.backgroundImage = "url('default_banner.png')";
+      q('hero-title').innerText = 'Ikeflix';
+      return;
+    }
+
+    // Banner principal: primer movie -> banner = `${name}.png`
+    const first = arr[0];
+    q('big-banner').style.backgroundImage = `url('${first}.png')`;
+    q('hero-title').innerText = first;
+
+    arr.forEach(name=>{
+      const tile = document.createElement('div');
+      tile.className = 'tile movie-item';
+      const img = document.createElement('img');
+      img.src = `${name}.png`;
+      img.alt = name;
+      img.loading = 'lazy';
+      img.onclick = ()=> openPlayer(name);
+      tile.appendChild(img);
+      listEl.appendChild(tile);
+    });
+  }
+
+  /* ----------------------
+     PLAYER
+     ---------------------- */
+  function openPlayer(name){
+    q('player-banner').style.backgroundImage = `url('${name}.png')`;
+    player.src = `${name}.mp4`;
+    playerModal.classList.add('open');
+    player.play().catch(()=>{/* some browsers block autoplay */});
+  }
+  function closePlayer(){
+    player.pause();
+    player.src = '';
+    playerModal.classList.remove('open');
+  }
+
+  /* ----------------------
+     AUTO-LOAD on start: if already logged and active profile -> go to home
+     ---------------------- */
+  window.addEventListener('DOMContentLoaded', ()=>{
+    const u = localStorage.getItem('ike_user');
+    const p = localStorage.getItem('ike_pass');
+    if(u && p && localStorage.getItem('ike_active') !== null){
+      // skip auth -> load home directly
+      authRoot.style.display = 'none';
+      profileRoot.style.display = 'none';
+      homeRoot.style.display = 'block';
+      const active = parseInt(localStorage.getItem('ike_active')||0);
+      const profiles = JSON.parse(localStorage.getItem('ike_profiles')||'[]');
+      if(profiles[active]) {
+        q('mini-avatar').src = profiles[active].icon;
+        q('greeting').innerText = 'Hola, ' + profiles[active].name;
+      }
+      renderMoviesFromMoviesArray();
+    } else if(u && p){
+      // require profile selection
+      authRoot.style.display = 'none';
+      loadProfilesUI();
+    } else {
+      // Show auth
+      authRoot.style.display = 'flex';
+    }
   });
-}
 
-function selectProfile(index){
-  const profiles = JSON.parse(localStorage.getItem("ikeflix_profiles"));
-  const p = profiles[index];
+  // Close player when clicking outside content
+  playerModal.addEventListener('click', (e)=>{
+    if(e.target === playerModal) closePlayer();
+  });
 
-  localStorage.setItem("ikeflix_active_profile", index);
-
-  document.getElementById("profile-icon").src = p.icon;
-  document.getElementById("settings-icon").src = p.icon;
-
-  document.getElementById("profile-screen").style.display = "none";
-
-  loadHome();
-}
-
-/* ------------------------------ */
-/*  SETTINGS                      */
-/* ------------------------------ */
-
-function openSettings(){
-  const index = localStorage.getItem("ikeflix_active_profile");
-  const profiles = JSON.parse(localStorage.getItem("ikeflix_profiles"));
-
-  document.getElementById("settings-icon").src = profiles[index].icon;
-
-  document.getElementById("settings-panel").style.display="block";
-}
-
-function closeSettings(){
-  document.getElementById("settings-panel").style.display="none";
-}
-
-document.getElementById("icon-upload").addEventListener("change", function(){
-  const file = this.files[0];
-  const reader = new FileReader();
-
-  reader.onload = function(e){
-    const index = localStorage.getItem("ikeflix_active_profile");
-    const profiles = JSON.parse(localStorage.getItem("ikeflix_profiles"));
-    profiles[index].icon = e.target.result;
-
-    localStorage.setItem("ikeflix_profiles", JSON.stringify(profiles));
-
-    document.getElementById("profile-icon").src = e.target.result;
-    document.getElementById("settings-icon").src = e.target.result;
-  };
-
-  reader.readAsDataURL(file);
-});
-
-/* ------------------------------ */
-/*  HOME UI                       */
-/* ------------------------------ */
-
-function goHome(){
-  loadHome();
-}
-
-function loadHome(){
-  loadMovies(); // from movies.js
-}
-
-function logout(){
-  localStorage.removeItem("ikeflix_active_profile");
-  document.getElementById("settings-panel").style.display="none";
-  location.reload();
-}
-
-</script>
-
+  </script>
 </body>
 </html>
