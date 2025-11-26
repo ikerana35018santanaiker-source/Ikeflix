@@ -2,339 +2,499 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ikeflix</title>
-
+<link rel="shortcut icon" href="Logo.png">
 <style>
-/* --------------------- RESET --------------------- */
+
+/* --------------------------- */
+/*         RESET              */
+/* --------------------------- */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
 body {
-  background-color: #0a0a0a;
+  background: #000;
   color: #fff;
   overflow-x: hidden;
 }
 
-/* --------------------- LOGIN & WELCOME --------------------- */
-#welcome-screen, #login-screen {
+/* --------------------------- */
+/*      ANIMACIONES GLOBALES  */
+/* --------------------------- */
+
+.fade-in {
+  animation: fadein 0.5s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadein {
+  to { opacity: 1; }
+}
+
+.slide-up {
+  animation: slideup 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes slideup {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --------------------------- */
+/*       PANTALLA LOGIN       */
+/* --------------------------- */
+
+#auth-screen {
+  width: 100%;
   height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 25px;
-  animation: fadeIn 0.8s ease-in-out;
-}
-
-#welcome-screen h1 {
-  font-size: 3rem;
-  color: #e50914;
-  text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
-}
-
-input {
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: none;
-  outline: none;
-  width: 220px;
-  font-size: 1rem;
-}
-
-button {
-  padding: 14px 20px;
-  background-color: #e50914;
-  border: none;
-  border-radius: 8px;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-  font-size: 1rem;
-}
-
-button:hover {
-  background-color: #f6121d;
-}
-
-/* --------------------- APP --------------------- */
-#app { display: none; }
-
-/* --------------------- TOPBAR --------------------- */
-.topbar {
   position: fixed;
   top: 0;
-  width: 100%;
-  height: 60px;
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(6px);
-  display: flex;
-  justify-content: space-between;
+  left: 0;
   align-items: center;
-  padding: 0 30px;
+  justify-content: center;
+  background: linear-gradient(180deg, #000 40%, #111);
   z-index: 100;
-  box-shadow: 0 2px 15px rgba(0,0,0,0.5);
 }
 
-.topbar button {
-  background: transparent;
-  color: #fff;
-  font-weight: bold;
-  font-size: 1rem;
-  padding: 6px 12px;
+.auth-box {
+  width: 380px;
+  padding: 40px;
+  background: rgba(0,0,0,0.75);
+  border-radius: 15px;
+  box-shadow: 0 0 40px rgba(255,0,0,0.15);
+  animation: fadein 0.5s ease forwards;
+}
+
+.auth-box img {
+  width: 150px;
+  margin: 0 auto 20px auto;
+  display: block;
+}
+
+.auth-box input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 12px;
   border-radius: 6px;
+  border: none;
+  outline: none;
+  background: #222;
+  color: white;
+  font-size: 15px;
+}
+
+.auth-box button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  background: red;
+  border: none;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
   transition: 0.2s;
 }
 
-.topbar button:hover {
-  background-color: rgba(229,9,20,0.8);
+.auth-box button:hover {
+  background: #c40000;
+}
+
+/* Switch login / register */
+.switch {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+/* --------------------------- */
+/*       SELECCION PERFIL     */
+/* --------------------------- */
+
+#profile-screen {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background: #000;
+  top: 0;
+  left: 0;
+  text-align: center;
+  padding-top: 130px;
+  z-index: 90;
+}
+
+.profile-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.profile {
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.profile img {
+  width: 110px;
+  height: 110px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 3px solid #fff;
+}
+
+.profile:hover {
+  transform: scale(1.05);
+}
+
+/* --------------------------- */
+/*        TOPBAR NAV          */
+/* --------------------------- */
+
+.topbar {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 15px 30px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.9), transparent);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 50;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.topbar-left img {
+  height: 50px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.topbar-right button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 17px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.topbar-right button:hover {
+  opacity: 0.7;
 }
 
 #profile-icon {
   width: 45px;
   height: 45px;
-  border-radius: 50%;
+  border-radius: 8px;
   object-fit: cover;
-  border: 2px solid #fff;
-  cursor: pointer;
 }
 
-/* --------------------- HOME --------------------- */
-#big-banner {
+/* --------------------------- */
+/*         HOME UI            */
+/* --------------------------- */
+
+#home-screen {
+  padding-top: 110px;
+}
+
+.big-banner {
   width: 100%;
-  height: 400px;
+  height: 50vh;
   background-size: cover;
   background-position: center;
-  border-bottom: 4px solid #e50914;
-  margin-top: 60px;
-  border-radius: 0 0 15px 15px;
-  box-shadow: inset 0 0 50px rgba(0,0,0,0.7);
-}
-
-.movie-row {
-  margin-top: 30px;
-  padding: 0 30px;
-}
-
-.movie-row h2 {
-  margin-bottom: 15px;
-  font-size: 1.8rem;
-}
-
-.movies-container {
-  display: flex;
-  gap: 15px;
-  overflow-x: auto;
-  padding-bottom: 20px;
-  scroll-behavior: smooth;
-}
-
-.movie-item {
-  min-width: 220px;
-  height: 130px;
-  background-size: cover;
-  background-position: center;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.movie-item:hover {
-  transform: scale(1.08);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.7);
-}
-
-/* --------------------- MOVIE VIEW --------------------- */
-#movie-view {
-  display: none;
-  padding: 20px;
-  margin-top: 60px;
-  text-align: center;
-}
-
-#movie-banner {
-  width: 80%;
-  max-width: 850px;
-  border-radius: 15px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.7);
-}
-
-#movie-view button {
-  margin-top: 20px;
-  padding: 14px 24px;
-  font-size: 1.1rem;
-}
-
-/* --------------------- SETTINGS --------------------- */
-#settings {
-  display:none;
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.9);
-  backdrop-filter: blur(5px);
-  padding: 40px;
-  text-align:center;
-  z-index:200;
-  overflow-y: auto;
-}
-
-#settings h2 {
-  margin-bottom: 25px;
-  color: #e50914;
-}
-
-#settings img {
-  border-radius: 20px;
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border: 3px solid #fff;
   margin-bottom: 20px;
 }
 
-#settings input[type=file] {
-  padding: 8px;
+.section-title {
+  margin: 15px 30px;
+  font-size: 23px;
+}
+
+.movies-row {
+  display: flex;
+  overflow-x: auto;
+  padding-left: 30px;
+  gap: 18px;
+}
+
+.movie-item img {
+  width: 230px;
+  height: 130px;
   border-radius: 8px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.movie-item img:hover {
+  transform: scale(1.05);
+}
+
+/* --------------------------- */
+/*       SETTINGS PANEL       */
+/* --------------------------- */
+
+#settings-panel {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  top: 0;
+  left: 0;
+  z-index: 200;
+  padding-top: 80px;
+  text-align: center;
+}
+
+#settings-panel img {
+  width: 160px;
+  height: 160px;
+  border-radius: 15px;
+  border: 3px solid #fff;
+  object-fit: cover;
+}
+
+.settings-btn {
+  margin-top: 25px;
+  padding: 15px 40px;
+  background: red;
   border: none;
-  background-color: #222;
-  color: #fff;
+  font-size: 18px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-/* --------------------- ANIM --------------------- */
-@keyframes fadeIn {
-  from {opacity:0;}
-  to {opacity:1;}
-}
 </style>
 </head>
 <body>
 
-<!-- WELCOME -->
-<div id="welcome-screen">
-  <h1>Bienvenido a Catflix</h1>
-  <button onclick="goLogin()">Continuar</button>
+<!-- ----------------------------- -->
+<!--        PANTALLA LOGIN        -->
+<!-- ----------------------------- -->
+
+<div id="auth-screen">
+  <div class="auth-box fade-in">
+
+    <img src="Logo.png">
+
+    <h2 id="auth-title" style="text-align:center;margin-bottom:12px;">Iniciar sesión</h2>
+
+    <input id="auth-user" placeholder="Usuario">
+    <input id="auth-pass" placeholder="Contraseña" type="password">
+
+    <button onclick="authAction()">Continuar</button>
+
+    <div class="switch" onclick="switchAuth()">¿No tienes cuenta? Regístrate</div>
+
+  </div>
 </div>
 
-<!-- LOGIN -->
-<div id="login-screen" style="display:none;">
-  <h2>Iniciar sesión</h2>
-  <input id="user" placeholder="Usuario" />
-  <input id="pass" placeholder="Contraseña" type="password" />
-  <button onclick="login()">Entrar</button>
+<!-- ----------------------------- -->
+<!--       SELECCION PERFIL       -->
+<!-- ----------------------------- -->
+
+<div id="profile-screen" class="fade-in">
+
+  <h1>¿Quién está viendo Ikeflix?</h1>
+
+  <div class="profile-container" id="profile-container"></div>
+
 </div>
 
-<!-- APP -->
-<div id="app">
-  <div class="topbar">
+<!-- ----------------------------- -->
+<!--             HOME             -->
+<!-- ----------------------------- -->
+
+<div class="topbar">
+  <div class="topbar-left">
+    <img src="Logo.png">
     <button onclick="goHome()">Inicio</button>
-    <div style="display:flex;align-items:center;gap:15px;">
-      <img id="profile-icon" src="default_icon.png" alt="Perfil">
-      <button onclick="openSettings()">Ajustes</button>
-    </div>
   </div>
 
-  <!-- HOME -->
-  <div id="home">
-    <div id="big-banner"></div>
-    <div class="movie-row">
-      <h2>Películas</h2>
-      <div class="movies-container" id="movies-list"></div>
-    </div>
-  </div>
-
-  <!-- MOVIE VIEW -->
-  <div id="movie-view">
-    <img id="movie-banner" alt="Movie Banner">
-    <br>
-    <button id="play-btn">Reproducir</button>
+  <div class="topbar-right">
+    <button onclick="openSettings()">Ajustes</button>
+    <img id="profile-icon" src="default.png">
   </div>
 </div>
 
-<!-- SETTINGS -->
-<div id="settings">
-  <h2>Ajustes</h2>
-  <img id="settings-icon" src="default_icon.png" alt="Icono perfil">
-  <br>
-  <input type="file" id="icon-upload" accept="image/*">
-  <br><br>
-  <button onclick="closeSettings()">Cerrar</button>
-  <button onclick="logout()">Cerrar Sesión</button>
+<div id="home-screen"></div>
+
+<!-- ----------------------------- -->
+<!--           SETTINGS           -->
+<!-- ----------------------------- -->
+
+<div id="settings-panel">
+
+  <h1>Ajustes</h1>
+
+  <h3>Icono de perfil</h3>
+  <img id="settings-icon" src="default.png"><br><br>
+
+  <input type="file" id="icon-upload" accept="image/*"><br><br>
+
+  <button class="settings-btn" onclick="logout()">Cerrar sesión</button><br><br>
+  <button class="settings-btn" onclick="closeSettings()" style="background:#444;">Cerrar</button>
+
 </div>
 
-<!-- JS -->
+<script src="movies.js"></script>
+
 <script>
-// VARIABLES
-const welcomeScreen = document.getElementById('welcome-screen');
-const loginScreen = document.getElementById('login-screen');
-const app = document.getElementById('app');
-const home = document.getElementById('home');
-const movieView = document.getElementById('movie-view');
-const settings = document.getElementById('settings');
 
-// LOGIN
-function goLogin(){ welcomeScreen.style.display='none'; loginScreen.style.display='flex'; }
-function login(){
-  const user=document.getElementById('user').value;
-  const pass=document.getElementById('pass').value;
-  if(!user||!pass)return alert("Completa los campos.");
-  localStorage.setItem("cat_user",user);
-  localStorage.setItem("cat_pass",pass);
-  loadApp();
+/* ------------------------------ */
+/*  LOGIN / REGISTER LOGIC        */
+/* ------------------------------ */
+
+let mode = "login";
+
+function switchAuth() {
+  mode = (mode === "login") ? "register" : "login";
+  document.getElementById("auth-title").innerText =
+      mode === "login" ? "Iniciar sesión" : "Registro";
+  document.querySelector(".switch").innerText =
+      mode === "login" ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión";
 }
 
-function loadApp(){
-  welcomeScreen.style.display='none';
-  loginScreen.style.display='none';
-  app.style.display='block';
-  loadProfileIcon();
-  loadMovies();
-}
+function authAction() {
+  const user = document.getElementById("auth-user").value;
+  const pass = document.getElementById("auth-pass").value;
 
-function goHome(){ home.style.display='block'; movieView.style.display='none'; }
-function openSettings(){ settings.style.display='block'; document.getElementById("settings-icon").src = localStorage.getItem("cat_icon") || "default_icon.png"; }
-function closeSettings(){ settings.style.display='none'; }
-function logout(){ localStorage.clear(); location.reload(); }
+  if (mode === "register") {
+    localStorage.setItem("ikeflix_user", user);
+    localStorage.setItem("ikeflix_pass", pass);
+    createDefaultProfiles();
+    alert("Cuenta creada.");
+    switchAuth();
+  } else {
+    if (user === localStorage.getItem("ikeflix_user") &&
+        pass === localStorage.getItem("ikeflix_pass")) {
 
-// AUTO LOGIN
-window.onload=()=>{ if(localStorage.getItem("cat_user")) loadApp(); };
-
-// PROFILE ICON
-function loadProfileIcon(){
-  const icon=localStorage.getItem("cat_icon")||"default_icon.png";
-  document.getElementById("profile-icon").src=icon;
-  document.getElementById("settings-icon").src=icon;
-}
-
-document.getElementById("icon-upload").addEventListener("change",function(e){
-  const file=e.target.files[0];
-  if(!file) return;
-  const reader=new FileReader();
-  reader.onload=function(event){
-    localStorage.setItem("cat_icon",event.target.result);
-    loadProfileIcon();
+      document.getElementById("auth-screen").style.display = "none";
+      loadProfiles();
+    } else {
+      alert("Datos incorrectos.");
+    }
   }
+}
+
+/* ------------------------------ */
+/*  PERFILES                      */
+/* ------------------------------ */
+
+function createDefaultProfiles() {
+  const profiles = [
+    { name:"Tú", icon:"default.png" }
+  ];
+  localStorage.setItem("ikeflix_profiles", JSON.stringify(profiles));
+}
+
+function loadProfiles() {
+  document.getElementById("profile-screen").style.display = "block";
+
+  const list = document.getElementById("profile-container");
+  list.innerHTML = "";
+
+  const profiles = JSON.parse(localStorage.getItem("ikeflix_profiles"));
+
+  profiles.forEach((p,i)=>{
+    list.innerHTML += `
+      <div class="profile fade-in" onclick="selectProfile(${i})">
+        <img src="${p.icon}">
+        <p>${p.name}</p>
+      </div>
+    `;
+  });
+}
+
+function selectProfile(index){
+  const profiles = JSON.parse(localStorage.getItem("ikeflix_profiles"));
+  const p = profiles[index];
+
+  localStorage.setItem("ikeflix_active_profile", index);
+
+  document.getElementById("profile-icon").src = p.icon;
+  document.getElementById("settings-icon").src = p.icon;
+
+  document.getElementById("profile-screen").style.display = "none";
+
+  loadHome();
+}
+
+/* ------------------------------ */
+/*  SETTINGS                      */
+/* ------------------------------ */
+
+function openSettings(){
+  const index = localStorage.getItem("ikeflix_active_profile");
+  const profiles = JSON.parse(localStorage.getItem("ikeflix_profiles"));
+
+  document.getElementById("settings-icon").src = profiles[index].icon;
+
+  document.getElementById("settings-panel").style.display="block";
+}
+
+function closeSettings(){
+  document.getElementById("settings-panel").style.display="none";
+}
+
+document.getElementById("icon-upload").addEventListener("change", function(){
+  const file = this.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+    const index = localStorage.getItem("ikeflix_active_profile");
+    const profiles = JSON.parse(localStorage.getItem("ikeflix_profiles"));
+    profiles[index].icon = e.target.result;
+
+    localStorage.setItem("ikeflix_profiles", JSON.stringify(profiles));
+
+    document.getElementById("profile-icon").src = e.target.result;
+    document.getElementById("settings-icon").src = e.target.result;
+  };
+
   reader.readAsDataURL(file);
 });
 
-// MOVIE VIEW
-function openMovie(name){
-  home.style.display='none';
-  movieView.style.display='block';
-  const banner=`Peliculas/${name}/Banner.png`;
-  const movie=`Peliculas/${name}/Movie.mp4`;
-  document.getElementById("movie-banner").src=banner;
-  document.getElementById("play-btn").onclick=()=>{ window.location.href=movie; };
-}
-</script>
+/* ------------------------------ */
+/*  HOME UI                       */
+/* ------------------------------ */
 
-<script src="movies.js"></script>
+function goHome(){
+  loadHome();
+}
+
+function loadHome(){
+  loadMovies(); // from movies.js
+}
+
+function logout(){
+  localStorage.removeItem("ikeflix_active_profile");
+  document.getElementById("settings-panel").style.display="none";
+  location.reload();
+}
+
+</script>
 
 </body>
 </html>
