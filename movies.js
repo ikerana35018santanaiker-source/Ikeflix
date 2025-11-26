@@ -1,25 +1,33 @@
-// Lista manual de archivos (solo sus nombres, sin extensión)
-// Aquí agregas tus películas reales (los nombres de los archivos mp4)
-// EJEMPLO:
-const fileNames = [
-  "la_fiesta_de_halloween_que_casi_nos_arruino_la_vida"
+const moviesTitles = [
+    "La Fiesta de Halloween que casi nos arruinó la vida...",
+    "Interstellar",
+    "Sonic 2: La Película",
+    "Shrek Para Siempre"
 ];
 
-// Convierte nombre de archivo en título bonito
-function titleFromFile(file) {
-    let name = file.replace(/_/g, " ");               // _ → espacio
-    name = name.replace(/\b\w/g, l => l.toUpperCase()); // Capitalizar cada palabra
-    return name;
+// --------------------
+// Función para convertir título en nombre de archivo seguro
+// --------------------
+function slugify(text) {
+    return text
+        .normalize("NFD")                     // separa tildes
+        .replace(/[\u0300-\u036f]/g, "")      // quita acentos
+        .replace(/[^a-zA-Z0-9 ]/g, "")        // quita símbolos raros
+        .trim()
+        .replace(/\s+/g, "_")                 // espacios -> _
+        .toLowerCase();
 }
 
-// Genera el array final de movies automáticamente
-const movies = fileNames.map(f => ({
-    file: f,
-    title: titleFromFile(f)
+// --------------------
+// Generar array final de movies
+// --------------------
+const movies = moviesTitles.map(title => ({
+    title: title,
+    file: slugify(title)
 }));
 
 // --------------------
-// Cargar películas
+// Función para cargar películas en la UI
 // --------------------
 function loadMovies() {
     const grid = document.getElementById("movieGrid");
@@ -32,16 +40,10 @@ function loadMovies() {
         card.className = "movie-card";
 
         card.innerHTML = `
-            <img src="${movie.file}.png" 
-                 alt="${movie.title}" 
-                 class="movie-banner" 
-                 onerror="this.src='fallback.png'">
-
+            <img src="${movie.file}.png" alt="${movie.title}" class="movie-banner" onerror="this.src='fallback.png'">
             <div class="movie-info">
                 <h3>${movie.title}</h3>
-                <button class="play-btn" onclick="playMovie('${movie.file}')">
-                    ▶ Reproducir
-                </button>
+                <button class="play-btn" onclick="playMovie('${movie.file}')">▶ Reproducir</button>
             </div>
         `;
         grid.appendChild(card);
@@ -49,14 +51,14 @@ function loadMovies() {
 }
 
 // --------------------
-// Reproducir película
+// Función para reproducir película
 // --------------------
 function playMovie(file) {
     window.open(`${file}.mp4`, "_blank");
 }
 
 // --------------------
-// Auto-ejecución
+// Auto-ejecución al cargar la página
 // --------------------
 window.addEventListener("DOMContentLoaded", () => {
     const logged = localStorage.getItem("loggedUser");
