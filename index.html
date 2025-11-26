@@ -1,223 +1,256 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Ikeflix</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Catflix</title>
 
 <style>
-/* ---------- VARIABLES ---------- */
-:root{
-  --bg-900: #05070a;
-  --bg-800: #071018;
-  --card: rgba(255,255,255,0.03);
-  --muted: #9fb0c4;
-  --text: #e7f0f8;
-  --accent: #e50914;
-  --radius: 12px;
-}
-
-/* ---------- RESET ---------- */
-*{box-sizing:border-box}
-body{
-  margin:0;
+/* --------------------- GENERAL --------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   font-family: Arial, sans-serif;
-  background: linear-gradient(180deg,var(--bg-900), var(--bg-800));
-  color:var(--text);
 }
 
-/* ---------- UTIL ---------- */
-.hidden{display:none!important}
-
-/* ---------- LOGIN ---------- */
-#login_screen{
-  position:fixed; inset:0;
-  display:flex; justify-content:center; align-items:center;
-  background:rgba(0,0,0,0.55);
-  backdrop-filter:blur(6px);
-  z-index:999;
-}
-#login_box{
-  background:rgba(255,255,255,0.03);
-  padding:20px;
-  border-radius:14px;
-  width:90%; max-width:400px;
-}
-#login_box input{
-  width:100%; padding:10px; margin:8px 0;
-  border-radius:8px; border:1px solid rgba(255,255,255,0.1);
-  background:transparent; color:white;
-}
-#login_box button{
-  width:100%; padding:10px; margin-top:8px;
-  border:none; border-radius:8px;
-  background:var(--accent); color:white;
-  font-weight:bold; cursor:pointer;
+body {
+  background-color: #000;
+  color: white;
+  overflow-x: hidden;
 }
 
-/* ---------- TOPBAR ---------- */
-.topbar{
-  display:flex; align-items:center; gap:20px;
-  padding:12px 20px;
-  background:rgba(0,0,0,0.4);
-  backdrop-filter:blur(6px);
-  position:sticky; top:0; z-index:10;
-}
-.navlink{cursor:pointer; color:var(--muted)}
-.navlink:hover{color:white}
-
-/* ---------- HERO ---------- */
-.hero{padding:20px}
-#bigbanner{
-  width:100%; height:300px;
-  border-radius:12px;
-  background-size:cover;
-  background-position:center;
-  box-shadow:inset 0 -80px 120px rgba(0,0,0,0.6);
-  display:flex; align-items:end; padding:20px;
-}
-#bigbanner_title{font-size:1.8rem}
-
-/* ---------- GRID ---------- */
-#grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(160px,1fr));
-  padding:20px; gap:16px;
-}
-.card-movie{
-  background:rgba(255,255,255,0.04);
-  border-radius:10px;
-  overflow:hidden;
-  cursor:pointer;
-}
-.card-movie img{
-  width:100%; height:220px; object-fit:cover;
+/* --------------------- LOGIN --------------------- */
+#welcome-screen, #login-screen {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  animation: fadeIn 0.7s;
 }
 
-/* ---------- MODAL ---------- */
-#movie_modal{
-  position:fixed; inset:0;
-  background:rgba(0,0,0,0.75);
-  display:flex; justify-content:center; align-items:center;
-  opacity:0; pointer-events:none;
-  transition:.2s;
+input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
 }
-#movie_modal.open{
-  opacity:1; pointer-events:auto;
+
+button {
+  padding: 12px 18px;
+  background: red;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
 }
-#modal_content{
-  width:90%; max-width:900px;
-  background:#0b1116;
-  border-radius:12px;
-  padding:20px;
+
+button:hover {
+  background: #ff4d4d;
 }
-#modal_banner{
-  width:100%; height:300px;
-  background-size:cover;
-  background-position:center;
-  border-radius:10px;
+
+/* --------------------- TOPBAR --------------------- */
+#app {
+  display: none;
 }
-#video_player{width:100%; border-radius:10px; margin-top:16px;}
+
+.topbar {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(5px);
+  position: fixed;
+  top: 0;
+  z-index: 50;
+}
+
+.topbar button {
+  margin-left: 10px;
+}
+
+/* --------------------- HOME --------------------- */
+#big-banner {
+  width: 100%;
+  height: 350px;
+  background-size: cover;
+  background-position: center;
+  margin-top: 80px;
+}
+
+.movie-row {
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.movie-row h2 {
+  margin-bottom: 10px;
+}
+
+.movies-container {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.movie-item {
+  width: 220px;
+  height: 120px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.movie-item:hover {
+  transform: scale(1.05);
+}
+
+/* --------------------- MOVIE VIEW --------------------- */
+#movie-view {
+  display: none;
+  padding: 20px;
+  margin-top: 80px;
+  text-align: center;
+}
+
+#movie-banner {
+  width: 80%;
+  border-radius: 20px;
+}
+
+#movie-view button {
+  margin-top: 20px;
+}
+
+/* --------------------- ANIM --------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 </style>
 </head>
-
 <body>
 
-<!-- ---------- LOGIN ---------- -->
-<div id="login_screen">
-  <div id="login_box">
-    <h2>Bienvenido a Catflix</h2>
-    <input id="username" placeholder="Usuario">
-    <input id="password" placeholder="Contraseña" type="password">
-    <button onclick="login()">Entrar</button>
-  </div>
+<!-- --------------------- WELCOME --------------------- -->
+<div id="welcome-screen">
+  <h1>Bienvenido a Catflix</h1>
+  <button onclick="goLogin()">Continuar</button>
 </div>
 
-<!-- ---------- TOPBAR ---------- -->
-<header class="topbar hidden" id="topbar">
-  <div class="navlink" onclick="changeSection('inicio')">Inicio</div>
-  <div class="navlink" onclick="changeSection('peliculas')">Películas</div>
-  <div class="navlink" onclick="changeSection('series')">Series</div>
-  <div class="navlink" onclick="logout()">Cerrar sesión</div>
-</header>
-
-<!-- ---------- HERO ---------- -->
-<section class="hero">
-  <div id="bigbanner">
-    <div id="bigbanner_title">Cargando…</div>
-  </div>
-</section>
-
-<!-- ---------- GRID ---------- -->
-<div id="grid"></div>
-
-<!-- ---------- MODAL ---------- -->
-<div id="movie_modal">
-  <div id="modal_content">
-    <div id="modal_banner"></div>
-    <video id="video_player" controls></video>
-  </div>
+<!-- --------------------- LOGIN --------------------- -->
+<div id="login-screen" style="display:none;">
+  <h2>Iniciar sesión</h2>
+  <input id="user" placeholder="Usuario" />
+  <input id="pass" placeholder="Contraseña" type="password" />
+  <button onclick="login()">Entrar</button>
 </div>
 
-<!-- ---------- JS PRINCIPAL ---------- -->
+<!-- --------------------- APP --------------------- -->
+<div id="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <button onclick="goHome()">Inicio</button>
+    </div>
+    <div>
+      <button onclick="openSettings()">Ajustes</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="home">
+    <div id="big-banner"></div>
+
+    <div class="movie-row">
+      <h2>Películas</h2>
+      <div class="movies-container" id="movies-list"></div>
+    </div>
+  </div>
+
+  <!-- MOVIE VIEW -->
+  <div id="movie-view">
+    <img id="movie-banner" />
+    <br>
+    <button id="play-btn">Reproducir</button>
+  </div>
+
+</div>
+
+<!-- --------------------- JS (INTERNO) --------------------- -->
 <script>
-/* ---------------- LOGIN ---------------- */
-function login(){
-  const u = document.getElementById("username").value;
-  const p = document.getElementById("password").value;
-
-  if(u.trim()=="" || p.trim()=="") return;
-
-  localStorage.setItem("catflix_user", u);
-  localStorage.setItem("catflix_pass", p);
-
-  document.getElementById("login_screen").classList.add("hidden");
-  document.getElementById("topbar").classList.remove("hidden");
+// ---- NAVEGACIÓN ----
+function goLogin() {
+  document.getElementById("welcome-screen").style.display = "none";
+  document.getElementById("login-screen").style.display = "flex";
 }
 
-function logout(){
-  localStorage.removeItem("catflix_user");
-  localStorage.removeItem("catflix_pass");
-  location.reload();
+function login() {
+  const user = document.getElementById("user").value;
+  const pass = document.getElementById("pass").value;
+
+  if (user.length < 1 || pass.length < 1) return alert("Completa los campos.");
+
+  localStorage.setItem("cat_user", user);
+  localStorage.setItem("cat_pass", pass);
+
+  loadApp();
 }
 
-/* AUTO LOGIN */
-window.onload = function(){
-  if(localStorage.getItem("catflix_user")){
-    document.getElementById("login_screen").classList.add("hidden");
-    document.getElementById("topbar").classList.remove("hidden");
+function loadApp() {
+  document.getElementById("welcome-screen").style.display = "none";
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("app").style.display = "block";
+
+  loadMovies(); // Carga de movies.js
+}
+
+function goHome() {
+  document.getElementById("home").style.display = "block";
+  document.getElementById("movie-view").style.display = "none";
+}
+
+function openSettings() {
+  const opc = confirm("¿Cerrar sesión?");
+  if (opc) {
+    localStorage.removeItem("cat_user");
+    localStorage.removeItem("cat_pass");
+    location.reload();
   }
 }
 
-/* ---------------- CAMBIO DE SECCIÓN ---------------- */
-function changeSection(sec){
-  if(window.sectionsData){
-    renderSection(sec, window.sectionsData);
-  }
-}
-
-/* ---------------- MODAL ---------------- */
-function openMovie(movie){
-  document.getElementById("modal_banner").style.backgroundImage =
-    `url('${movie.cover}')`;
-
-  const v = document.getElementById("video_player");
-  v.src = movie.video;
-  v.classList.remove("hidden");
-
-  document.getElementById("movie_modal").classList.add("open");
-}
-
-document.getElementById("movie_modal").onclick = (e)=>{
-  if(e.target.id==="movie_modal"){
-    document.getElementById("movie_modal").classList.remove("open");
-    document.getElementById("video_player").pause();
+// ---- AUTO LOGIN ----
+window.onload = () => {
+  if (localStorage.getItem("cat_user")) {
+    loadApp();
   }
 };
+
+// ---- MOVIE VIEW ----
+function openMovie(name) {
+  document.getElementById("home").style.display = "none";
+  document.getElementById("movie-view").style.display = "block";
+
+  const banner = `Peliculas/${name}/Banner.png`;
+  const movie = `Peliculas/${name}/Movie.mp4`;
+
+  document.getElementById("movie-banner").src = banner;
+
+  document.getElementById("play-btn").onclick = () => {
+    window.location.href = movie;
+  };
+}
 </script>
 
-<!-- ---------- AUTOLOAD DE PELÍCULAS (SEPARADO) ---------- -->
-<script src="autoload.js"></script>
+<!-- LOAD AUTO-MOVIES -->
+<script src="movies.js"></script>
 
 </body>
 </html>
