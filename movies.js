@@ -1,37 +1,51 @@
-// Lista de películas (friendlyName y fileName)
+// ================================================
+// LISTA DE TÍTULOS DE PELÍCULAS (SOLO NOMBRES)
+// ================================================
 const movies = [
-    {
-        title: "La Fiesta de Halloween que casi nos arruinó la vida...",
-        file: "fiesta_halloween"
-    }
+    "La Fiesta de Halloween que casi nos arruinó la vida..."
 ];
 
 
-// ==============================
-// CARGA DE LA HOME
-// ==============================
+// ================================================
+// FUNCIÓN PARA GENERAR NOMBRES DE ARCHIVO SEGUROS
+// ================================================
+function slugify(text) {
+    return text
+        .normalize("NFD")                     // separa tildes
+        .replace(/[\u0300-\u036f]/g, "")      // elimina tildes
+        .replace(/[^a-zA-Z0-9 ]/g, "")        // elimina símbolos
+        .trim()
+        .replace(/\s+/g, "_")                 // espacios → _
+        .toLowerCase();                       // minúsculas
+}
 
+
+// ================================================
+// CARGA DE LA HOME
+// ================================================
 function loadMovies() {
     const grid = document.getElementById("movieGrid");
     if (!grid) return;
 
-    grid.innerHTML = ""; 
+    grid.innerHTML = "";
 
-    movies.forEach(movie => {
-        const banner = movie.file + ".png";
+    movies.forEach(title => {
+        const file = slugify(title);        // convierte el título en archivo
+        const banner = `${file}.png`;
 
         const card = document.createElement("div");
         card.className = "movie-card";
 
         card.innerHTML = `
-            <img src="${banner}" 
-                 alt="${movie.title}"
+            <img src="${banner}"
+                 alt="${title}"
                  class="movie-banner"
                  onerror="this.src='fallback.png'">
 
             <div class="movie-info">
-                <h3>${movie.title}</h3>
-                <button class="play-btn" onclick="playMovie('${movie.file}')">
+                <h3>${title}</h3>
+
+                <button class="play-btn" onclick="playMovie('${file}')">
                     ▶ Reproducir
                 </button>
             </div>
@@ -42,20 +56,18 @@ function loadMovies() {
 }
 
 
-// ==============================
+// ================================================
 // REPRODUCIR PELÍCULA
-// ==============================
-
-function playMovie(fileName) {
-    const url = `${fileName}.mp4`;
+// ================================================
+function playMovie(file) {
+    const url = `${file}.mp4`;
     window.open(url, "_blank");
 }
 
 
-// ==============================
+// ================================================
 // AUTO-EJECUCIÓN
-// ==============================
-
+// ================================================
 window.addEventListener("DOMContentLoaded", () => {
     const logged = localStorage.getItem("loggedUser");
     if (logged) loadMovies();
