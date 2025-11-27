@@ -2,243 +2,31 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Ikeflix</title>
-    <link rel="icon" href="Logo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <style>
-        /* --- RESET --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", Arial, sans-serif;
-        }
-
-        body {
-            background: #000;
-            color: #fff;
-            overflow-x: hidden;
-        }
-
-        /* --- ANIMACIONES --- */
-        @keyframes fadeIn { from {opacity: 0} to {opacity: 1} }
-        @keyframes slideUp { from {transform: translateY(40px); opacity: 0} to {transform: translateY(0); opacity: 1} }
-        @keyframes pulse { 0% {opacity: 0.5} 50% {opacity: 1} 100% {opacity: 0.5} }
-
-        /* --- LOGIN SCREEN --- */
-        #loginScreen {
-            position: fixed;
-            inset: 0;
-            padding: 20px;
-            background: radial-gradient(circle at top, #111 0%, #000 80%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 1.2s ease;
-        }
-
-        .login-box {
-            width: 330px;
-            padding: 40px 30px;
-            background: #0f0f0f;
-            border-radius: 14px;
-            box-shadow: 0 0 25px #ff00002c;
-            animation: slideUp 0.8s ease;
-        }
-
-        .login-box h1 {
-            text-align: center;
-            font-size: 32px;
-            font-weight: 700;
-            color: #e50914;
-            margin-bottom: 25px;
-        }
-
-        .login-box input {
-            width: 100%;
-            padding: 13px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 8px;
-            background: #1b1b1b;
-            color: white;
-            font-size: 15px;
-            outline: none;
-            transition: 0.2s;
-        }
-
-        .login-box input:focus {
-            background: #222;
-            box-shadow: 0 0 8px #e5091460;
-        }
-
-        .login-box button {
-            width: 100%;
-            padding: 14px;
-            background: #e50914;
-            border: none;
-            font-size: 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: 0.2s;
-        }
-
-        .login-box button:hover {
-            background: #ff1520;
-            transform: scale(1.03);
-        }
-
-        /* --- APP --- */
-        #app {
-            display: none;
-            animation: fadeIn 0.8s ease;
-        }
-
-        /* --- TOPBAR --- */
-        .topbar {
-            width: 100%;
-            padding: 18px 28px;
-            background: #000000dd;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #ffffff1c;
-        }
-
-        .topbar img {
-            height: 42px;
-            animation: fadeIn 1s;
-        }
-
-        .topbar button {
-            background: transparent;
-            border: 1px solid #ffffff49;
-            padding: 8px 16px;
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .topbar button:hover {
-            background: #ffffff17;
-        }
-
-        /* --- GRID PELÍCULAS --- */
-        #movieGrid {
-            padding: 32px;
-            display: grid;
-            gap: 22px;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            animation: fadeIn 1s ease;
-        }
-
-        .movie-card {
-            background: #151515;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: 0.25s;
-            border: 1px solid #ffffff0a;
-        }
-
-        .movie-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 22px #00000070;
-        }
-
-        .movie-banner {
-            width: 100%;
-            height: 240px;
-            object-fit: cover;
-            background: #222;
-        }
-
-        .movie-info {
-            padding: 12px;
-        }
-
-        .movie-info h3 {
-            font-size: 15px;
-            margin-bottom: 10px;
-            line-height: 1.2;
-            min-height: 38px;
-        }
-
-        .play-btn {
-            width: 100%;
-            padding: 8px;
-            font-size: 15px;
-            background: #e50914;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .play-btn:hover {
-            background: #ff1520;
-        }
-    </style>
+    <title>Ikeflix</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="movies.js"></script>
+    <script defer src="script.js"></script>
 </head>
 
 <body>
 
-    <!-- LOGIN -->
-    <div id="loginScreen">
-        <div class="login-box">
-            <h1>Ikeflix</h1>
-            <input type="text" id="user" placeholder="Usuario">
-            <input type="password" id="pass" placeholder="Contraseña">
-            <button onclick="login()">Entrar</button>
-        </div>
+    <header>
+        <img src="Logo.png" class="logo">
+        <h1>Ikeflix</h1>
+    </header>
+
+    <div id="movies-container">
+        <h2>Películas</h2>
+        <div id="movies-list"></div>
     </div>
 
-    <!-- APP -->
-    <div id="app">
-        <div class="topbar">
-            <img src="Logo.png">
-            <button onclick="logout()">Cerrar sesión</button>
-        </div>
-
-        <div id="movieGrid"></div>
+    <!-- Reproductor interno -->
+    <div id="player-container" class="hidden">
+        <button id="close-player">✕</button>
+        <h2 id="player-title"></h2>
+        <video id="player-video" controls autoplay></video>
     </div>
-
-<script>
-/* LOGIN SYSTEM */
-function login() {
-    const u = document.getElementById("user").value.trim();
-    const p = document.getElementById("pass").value.trim();
-
-    if (u === "" || p === "") return alert("Completa los campos.");
-
-    localStorage.setItem("loggedUser", u);
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("app").style.display = "block";
-    loadMovies();
-}
-
-function logout() {
-    localStorage.removeItem("loggedUser");
-    location.reload();
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-    if (localStorage.getItem("loggedUser")) {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("app").style.display = "block";
-        loadMovies();
-    }
-});
-</script>
-
-<!-- Movies JS externo -->
-<script src="movies.js"></script>
 
 </body>
 </html>
