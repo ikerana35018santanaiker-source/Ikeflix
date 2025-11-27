@@ -7,166 +7,153 @@
   <link rel="icon" href="Logo.png">
 
   <style>
-    /* ---------- RESET / VARIABLES ---------- */
+    /* ---------- VARIABLES & RESET ---------- */
     :root{
-      --bg:#040608;
-      --panel:#071021;
+      --bg:#04060a;
+      --card:#0b0f14;
       --muted:#9fb0c4;
       --accent:#e50914;
       --glass: rgba(255,255,255,0.03);
       --radius:12px;
+      --shadow: 0 10px 30px rgba(2,6,23,0.6);
     }
-    *{box-sizing:border-box}
+    *{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%}
     body{
-      margin:0;
+      background: linear-gradient(180deg,var(--bg), #061226);
+      color:#e7f0f8;
       font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
-      background: linear-gradient(180deg,var(--bg), #071226);
-      color:#eaf3fb;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
     }
 
-    /* ---------- AUTH SCREEN ---------- */
-    #auth-root{
-      position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-      background: linear-gradient(180deg, rgba(2,6,12,0.6), rgba(2,6,12,0.9));
-      z-index:100;
-      padding:20px;
-    }
-    .auth-card{
-      width:360px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
-      padding:26px; border-radius:16px; box-shadow:0 12px 40px rgba(0,0,0,0.7);
-      text-align:center; transform:translateY(8px); opacity:0; animation:authIn .36s forwards;
-    }
-    @keyframes authIn{to{transform:none;opacity:1}}
-    .auth-card img{width:110px;margin:0 auto 12px;display:block}
-    .auth-card h2{margin:6px 0 10px;font-size:20px}
-    .auth-card .sub{color:var(--muted);font-size:13px;margin-bottom:12px}
-
-    .field{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(0,0,0,0.35);color:inherit;margin:8px 0}
-    .btn{width:100%;padding:11px;border-radius:10px;border:0;background:var(--accent);color:white;font-weight:700;cursor:pointer;margin-top:10px}
-    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06)}
-    .link{margin-top:10px;color:var(--muted);font-size:13px;cursor:pointer}
-
-    /* ---------- PROFILE SELECT ---------- */
-    #profile-root{display:none;padding-top:80px;text-align:center}
-    .profiles{display:flex;gap:28px;justify-content:center;margin-top:24px;flex-wrap:wrap}
-    .profile-card{width:140px;cursor:pointer;transition:transform .18s, box-shadow .18s;text-align:center}
-    .profile-card img{width:120px;height:120px;object-fit:cover;border-radius:12px;border:3px solid rgba(255,255,255,0.06)}
-    .profile-card p{margin-top:8px;font-weight:600;color:#fff}
-
     /* ---------- TOPBAR ---------- */
     header.topbar{
-      position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:linear-gradient(180deg, rgba(0,0,0,0.8), rgba(0,0,0,0.2));backdrop-filter:blur(6px);
+      position:sticky;top:0;left:0;z-index:40;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 24px;background:linear-gradient(180deg, rgba(0,0,0,0.8), rgba(0,0,0,0.2));
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
     }
     .brand{display:flex;gap:12px;align-items:center}
-    .brand img{height:44px;width:44px;border-radius:8px;object-fit:cover}
-    nav.main{display:flex;gap:14px;align-items:center}
+    .brand img{width:44px;height:44px;border-radius:8px;object-fit:cover}
+    .brand .title{font-weight:800;letter-spacing:.6px}
+    nav.main{display:flex;gap:12px;align-items:center}
     .nav-btn{padding:8px 12px;border-radius:8px;color:var(--muted);cursor:pointer;font-weight:600}
     .nav-btn:hover{color:white;background:rgba(255,255,255,0.02)}
+
     .profile-mini{display:flex;gap:12px;align-items:center}
-    #mini-avatar{width:38px;height:38px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,255,255,0.06)}
+    #mini-avatar{width:40px;height:40px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,255,255,0.04)}
 
     /* ---------- HERO / BANNER ---------- */
-    #home{display:none}
-    .hero{padding:20px 24px}
+    main{padding-top:86px}
+    .hero{padding:18px 24px}
     .big-banner{
-      width:100%;height:52vh;border-radius:12px;background:#0b1116;background-size:cover;background-position:center;display:flex;align-items:end;padding:28px;box-shadow:inset 0 -60px 120px rgba(0,0,0,0.6)
+      width:100%;height:48vh;border-radius:12px;background:#071018;
+      background-size:cover;background-position:center;display:flex;align-items:end;padding:28px;
+      box-shadow: inset 0 -60px 120px rgba(0,0,0,0.6);
     }
-    .hero-title{font-size:28px;font-weight:800;text-shadow:0 6px 22px rgba(0,0,0,0.6)}
+    .hero-title{font-size:28px;font-weight:800;text-shadow:0 8px 30px rgba(0,0,0,0.6)}
 
     /* ---------- ROWS ---------- */
     .section{padding:18px 24px}
-    .section h3{margin:4px 0 12px;color:#f2f6fb;font-size:18px}
-    .row{display:flex;gap:14px;overflow:auto;padding-bottom:12px}
-    .tile{flex:0 0 220px;border-radius:10px;overflow:hidden;background:var(--panel);cursor:pointer;transition:transform .22s, box-shadow .22s}
+    .section h3{margin:8px 0 12px;color:#f2f6fb;font-size:18px}
+    .row{display:flex;gap:14px;overflow:auto;padding:10px 0 20px}
+    .tile{flex:0 0 220px;border-radius:10px;overflow:hidden;background:var(--card);cursor:pointer;box-shadow:var(--shadow);transition:transform .20s}
     .tile img{width:100%;height:128px;object-fit:cover;display:block}
-    .tile:hover{transform:translateY(-8px);box-shadow:0 18px 30px rgba(0,0,0,0.6)}
+    .tile:hover{transform:translateY(-8px)}
 
     /* ---------- MODAL PLAYER ---------- */
-    .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);z-index:90;opacity:0;pointer-events:none;transition:opacity .18s}
+    .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);z-index:90;opacity:0;pointer-events:none;transition:opacity .18s}
     .modal.open{opacity:1;pointer-events:auto}
-    .player-card{width:92%;max-width:980px;background:#071018;border-radius:12px;padding:16px;box-shadow:0 14px 40px rgba(0,0,0,0.6)}
-    .player-banner{width:100%;height:360px;background-size:cover;background-position:center;border-radius:8px}
+    .player{width:92%;max-width:980px;background:#071018;border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+    .player-banner{width:100%;height:320px;background-size:cover;background-position:center;border-radius:8px}
     video#player{width:100%;margin-top:12px;border-radius:8px;background:#000}
 
-    /* ---------- SETTINGS PANEL ---------- */
-    #settings{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;padding:40px;text-align:center}
-    .settings-card{max-width:520px;margin:30px auto;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.1));padding:18px;border-radius:12px}
-    .avatar-large{width:120px;height:120px;border-radius:12px;object-fit:cover;border:3px solid rgba(255,255,255,0.06)}
+    /* ---------- AUTH / PROFILES ---------- */
+    #auth-root{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(0,0,0,0.7), rgba(0,0,0,0.9));z-index:100;padding:20px}
+    .auth-card{width:380px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));padding:26px;border-radius:14px;box-shadow:var(--shadow);text-align:center}
+    .auth-card img{width:110px;margin:0 auto 10px;display:block}
+    .field{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(0,0,0,0.35);color:inherit;margin:8px 0}
+    .btn{width:100%;padding:12px;border-radius:10px;border:0;background:var(--accent);color:#fff;font-weight:700;cursor:pointer;margin-top:10px}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+    .link{margin-top:10px;color:var(--muted);font-size:13px;cursor:pointer}
 
-    /* ---------- small screens ---------- */
+    #profiles-root{display:none;padding-top:90px;text-align:center}
+    .profiles{display:flex;gap:26px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+    .profile-card{cursor:pointer;transition:transform .15s}
+    .profile-card img{width:110px;height:110px;object-fit:cover;border-radius:12px;border:3px solid rgba(255,255,255,0.06)}
+    .profile-card p{margin-top:10px;font-weight:700}
+
+    /* ---------- SETTINGS ---------- */
+    #settings{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:120;padding:40px;text-align:center}
+    .settings-card{max-width:520px;margin:0 auto;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08));padding:18px;border-radius:12px}
+
+    /* ---------- RESPONSIVE ---------- */
     @media (max-width:760px){
       .hero-title{font-size:20px}
-      .big-banner{height:36vh}
       .tile img{height:100px}
-      .profile-card img{width:96px;height:96px}
+      .auth-card{width:320px}
+      .profile-card img{width:92px;height:92px}
     }
-
   </style>
 </head>
 <body>
 
-  <!-- AUTH: LOGIN / REGISTER -->
-  <div id="auth-root">
-    <div class="auth-card" role="dialog" aria-labelledby="auth-title">
+  <!-- AUTH (login/register) -->
+  <div id="auth-root" role="dialog" aria-modal="true">
+    <div class="auth-card" aria-labelledby="auth-title">
       <img src="Logo.png" alt="Ikeflix logo">
       <h2 id="auth-title">Iniciar sesión</h2>
-      <div class="sub">Accede a Ikeflix o crea una cuenta nueva</div>
-
-      <input id="input-user" class="field" placeholder="Usuario">
-      <input id="input-pass" class="field" placeholder="Contraseña" type="password">
-
-      <button id="auth-btn" class="btn" onclick="handleAuth()">Continuar</button>
-      <div id="auth-switch" class="link" onclick="toggleAuth()">¿No tienes cuenta? Regístrate</div>
+      <input id="auth-user" class="field" placeholder="Usuario">
+      <input id="auth-pass" class="field" type="password" placeholder="Contraseña">
+      <button id="auth-btn" class="btn">Continuar</button>
+      <div id="auth-switch" class="link">¿No tienes cuenta? Regístrate</div>
     </div>
   </div>
 
   <!-- PROFILE SELECT -->
-  <div id="profile-root">
-    <h1 style="font-size:28px;margin-top:18px">¿Quién está viendo Ikeflix?</h1>
-    <div class="profiles" id="profiles-list" aria-live="polite"></div>
-    <div style="margin-top:22px">
+  <div id="profiles-root">
+    <h1>¿Quién está viendo Ikeflix?</h1>
+    <div class="profiles" id="profiles-list" role="list"></div>
+    <div style="margin-top:18px">
       <button class="btn secondary" onclick="addProfile()">Añadir perfil</button>
     </div>
   </div>
 
-  <!-- MAIN APP -->
-  <header class="topbar" role="navigation" aria-label="Ikeflix topbar">
+  <!-- TOPBAR -->
+  <header class="topbar" role="navigation">
     <div class="brand">
-      <img src="Logo.png" alt="Ikeflix logo">
-      <div style="font-weight:800;letter-spacing:.6px;font-size:18px">Ikeflix</div>
+      <img src="Logo.png" alt="Ikeflix">
+      <div class="title">Ikeflix</div>
     </div>
-
-    <nav class="main" role="menubar" aria-label="Main">
+    <nav class="main" role="menubar">
       <div class="nav-btn" onclick="goHome()">Inicio</div>
       <div class="nav-btn" onclick="openSettings()">Ajustes</div>
     </nav>
-
     <div class="profile-mini">
       <div id="greeting" style="font-weight:700;color:var(--muted)">Hola</div>
       <img id="mini-avatar" src="default.png" alt="avatar">
     </div>
   </header>
 
-  <!-- HOME -->
-  <main id="home" aria-live="polite">
+  <!-- MAIN -->
+  <main id="home" style="display:none">
     <section class="hero">
-      <div class="big-banner" id="big-banner" style="background-image:url('default_banner.png')">
-        <div style="color:white"><div class="hero-title" id="hero-title">Destacado</div></div>
+      <div id="big-banner" class="big-banner" style="background-image:url('default_banner.png')">
+        <div class="hero-title" id="hero-title">Destacado</div>
       </div>
     </section>
 
     <section class="section">
       <h3>Películas</h3>
-      <div class="row" id="movies-row" role="list"></div>
+      <div id="movies-row" class="row" role="list"></div>
     </section>
   </main>
 
   <!-- PLAYER MODAL -->
-  <div id="player-modal" class="modal" role="dialog" aria-hidden="true" aria-label="Reproductor">
-    <div class="player-card">
+  <div id="player-modal" class="modal" aria-hidden="true">
+    <div class="player" role="dialog" aria-label="Reproductor">
       <div id="player-banner" class="player-banner" style="background-image:url('default_banner.png')"></div>
       <video id="player" controls></video>
       <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
@@ -179,10 +166,8 @@
   <div id="settings" aria-hidden="true">
     <div class="settings-card">
       <h2>Ajustes de perfil</h2>
-      <img id="settings-avatar" class="avatar-large" src="default.png" alt="avatar">
-      <div style="margin-top:12px">
-        <input id="avatar-uploader" type="file" accept="image/*">
-      </div>
+      <img id="settings-avatar" src="default.png" alt="avatar" style="width:120px;height:120px;border-radius:12px;object-fit:cover">
+      <div style="margin-top:12px"><input id="avatar-uploader" type="file" accept="image/*"></div>
       <div style="margin-top:16px">
         <button class="btn" onclick="saveAvatar()">Guardar avatar</button>
         <button class="btn secondary" onclick="closeSettings()">Volver</button>
@@ -193,25 +178,28 @@
     </div>
   </div>
 
-  <!-- movies.js externo (debe definir `movies` array o puedes dejarlo vacío y editar aquí) -->
+  <!-- movies.js (debe estar en la misma carpeta) -->
   <script src="movies.js"></script>
 
   <script>
-  /* ----------------------
-     Estado y utilidades
-     ---------------------- */
+  /* ------------------
+     UTIL & SELECTORES
+     ------------------ */
   const authRoot = document.getElementById('auth-root');
-  const profileRoot = document.getElementById('profile-root');
+  const profilesRoot = document.getElementById('profiles-root');
   const homeRoot = document.getElementById('home');
   const playerModal = document.getElementById('player-modal');
   const player = document.getElementById('player');
 
-  function q(id){return document.getElementById(id)}
+  function q(id){ return document.getElementById(id) }
 
-  /* ----------------------
-     AUTH / REGISTER
-     ---------------------- */
+  /* ------------------
+     AUTH FLOW
+     ------------------ */
   let isRegister = false;
+  q('auth-switch').addEventListener('click', toggleAuth);
+  q('auth-btn').addEventListener('click', handleAuth);
+
   function toggleAuth(){
     isRegister = !isRegister;
     q('auth-title').innerText = isRegister ? 'Registro' : 'Iniciar sesión';
@@ -220,24 +208,22 @@
   }
 
   function handleAuth(){
-    const user = q('input-user').value.trim();
-    const pass = q('input-pass').value.trim();
+    const user = q('auth-user').value.trim();
+    const pass = q('auth-pass').value.trim();
     if(!user || !pass) return alert('Rellena usuario y contraseña');
 
     if(isRegister){
-      // Guardar credenciales simples (local demo)
       localStorage.setItem('ike_user', user);
       localStorage.setItem('ike_pass', pass);
       // perfiles por defecto
       localStorage.setItem('ike_profiles', JSON.stringify([{name:user, icon:'default.png'}]));
-      alert('Cuenta creada. Inicia sesión.');
+      alert('Cuenta creada. Ahora inicia sesión.');
       toggleAuth();
-      q('input-pass').value = '';
+      q('auth-pass').value = '';
     } else {
       const storedUser = localStorage.getItem('ike_user');
       const storedPass = localStorage.getItem('ike_pass');
       if(user === storedUser && pass === storedPass){
-        // avanzar a selección perfiles
         authRoot.style.display = 'none';
         loadProfilesUI();
       } else {
@@ -246,11 +232,11 @@
     }
   }
 
-  /* ----------------------
-     PERFILES
-     ---------------------- */
+  /* ------------------
+     PROFILES
+     ------------------ */
   function loadProfilesUI(){
-    profileRoot.style.display = 'block';
+    profilesRoot.style.display = 'block';
     const list = q('profiles-list');
     list.innerHTML = '';
     const profiles = JSON.parse(localStorage.getItem('ike_profiles') || '[]');
@@ -265,28 +251,26 @@
 
   function selectProfile(index){
     const profiles = JSON.parse(localStorage.getItem('ike_profiles')||'[]');
-    const profile = profiles[index];
+    const p = profiles[index];
     localStorage.setItem('ike_active', index);
-    q('mini-avatar').src = profile.icon;
-    q('greeting').innerText = 'Hola, ' + profile.name;
-    profileRoot.style.display = 'none';
-    // mostrar home
+    q('mini-avatar').src = p.icon;
+    q('greeting').innerText = 'Hola, ' + p.name;
+    profilesRoot.style.display = 'none';
     homeRoot.style.display = 'block';
-    renderMoviesFromMoviesArray();
+    renderMovies();
   }
 
   function addProfile(){
-    const name = prompt('Nombre del perfil:') || ('Perfil ' + (Math.floor(Math.random()*99)));
-    const profiles = JSON.parse(localStorage.getItem('ike_profiles') || '[]');
+    const name = prompt('Nombre del perfil:') || ('Perfil ' + (Math.floor(Math.random()*90)+10));
+    const profiles = JSON.parse(localStorage.getItem('ike_profiles')||'[]');
     profiles.push({name, icon:'default.png'});
     localStorage.setItem('ike_profiles', JSON.stringify(profiles));
     loadProfilesUI();
   }
 
-  /* ----------------------
+  /* ------------------
      SETTINGS / AVATAR
-     ---------------------- */
-
+     ------------------ */
   function openSettings(){
     const active = localStorage.getItem('ike_active');
     if(active === null){ alert('Selecciona perfil primero'); return; }
@@ -294,9 +278,7 @@
     q('settings-avatar').src = profiles[active].icon;
     q('settings').style.display = 'block';
   }
-
-  function closeSettings(){ q('settings').style.display = 'none'; }
-
+  function closeSettings(){ q('settings').style.display = 'none' }
   function saveAvatar(){
     const fileInput = q('avatar-uploader');
     if(!fileInput.files || !fileInput.files[0]) return alert('Selecciona una imagen');
@@ -309,7 +291,6 @@
       localStorage.setItem('ike_profiles', JSON.stringify(profiles));
       q('mini-avatar').src = data;
       q('settings-avatar').src = data;
-      // update profile list UI
       loadProfilesUI();
       alert('Icono guardado');
     };
@@ -324,99 +305,102 @@
     location.reload();
   }
 
-  /* ----------------------
-     MOVIES RENDER (usa variable global `movies`)
-     movies.js debe definir `movies` array (ej: ["Interstellar","Sonic2"])
-     ---------------------- */
+  /* ------------------
+     MOVIES RENDER (usa variable global movies desde movies.js)
+     ------------------ */
 
-  function renderMoviesFromMoviesArray(){
-    // si no existe movies (movies.js no cargado), espera un momento
-    if(!window.movies){
-      // intenta esperar hasta 2s
-      let tries = 0;
-      const t = setInterval(()=>{
-        tries++;
-        if(window.movies || tries>40){ clearInterval(t); renderMoviesNow(); }
-      },50);
-    } else renderMoviesNow();
-  }
-
-  function renderMoviesNow(){
-    const listEl = document.getElementById('movies-row');
-    listEl.innerHTML = '';
-    const arr = Array.isArray(window.movies) ? window.movies : [];
-
-    if(arr.length === 0){
-      listEl.innerHTML = '<div style="color:var(--muted);padding:18px">No hay películas definidas. Edita movies.js y añade nombres.</div>';
-      q('big-banner').style.backgroundImage = "url('default_banner.png')";
-      q('hero-title').innerText = 'Ikeflix';
-      return;
+  function renderMovies(){
+    // movies (array) debe venir desde movies.js y ser [{title, file}, ...] o strings
+    // Normalize
+    if(!window.movies) {
+      const row = q('movies-row'); row.innerHTML = '<div style="color:var(--muted);padding:18px">No hay películas definidas. Edita movies.js.</div>'; return;
     }
 
-    // Banner principal: primer movie -> banner = `${name}.png`
-    const first = arr[0];
-    q('big-banner').style.backgroundImage = `url('${first}.png')`;
-    q('hero-title').innerText = first;
+    // If movies is array of strings, convert
+    let arr = window.movies;
+    if(arr.length && typeof arr[0] === 'string'){
+      arr = arr.map(t => ({ title: t, file: slugify(t) }));
+    }
 
-    arr.forEach(name=>{
+    // if objects with title/file already, keep
+    const row = q('movies-row'); row.innerHTML = '';
+    arr.forEach(m => {
+      const file = m.file || slugify(m.title || m);
+      const title = m.title || niceTitle(file);
       const tile = document.createElement('div');
-      tile.className = 'tile movie-item';
-      const img = document.createElement('img');
-      img.src = `${name}.png`;
-      img.alt = name;
-      img.loading = 'lazy';
-      img.onclick = ()=> openPlayer(name);
-      tile.appendChild(img);
-      listEl.appendChild(tile);
+      tile.className = 'tile';
+      tile.innerHTML = `<img src="${file}.png" alt="${title}" onerror="this.src='fallback.png'">`;
+      tile.onclick = ()=> openPlayer(file, title);
+      row.appendChild(tile);
     });
+
+    // banner
+    if(arr[0]){
+      const firstFile = arr[0].file || slugify(arr[0].title || arr[0]);
+      q('big-banner').style.backgroundImage = `url('${firstFile}.png')`;
+      q('hero-title').innerText = arr[0].title || niceTitle(firstFile);
+    }
   }
 
-  /* ----------------------
+  // helper: niceTitle from file
+  function niceTitle(file){
+    return file.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+  }
+
+  // slugify (same logic as in movies.js)
+  function slugify(text){
+    return String(text || '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/[^a-zA-Z0-9 ]/g,'')
+      .trim().replace(/\s+/g,'_').toLowerCase();
+  }
+
+  /* ------------------
      PLAYER
-     ---------------------- */
-  function openPlayer(name){
-    q('player-banner').style.backgroundImage = `url('${name}.png')`;
-    player.src = `${name}.mp4`;
+     ------------------ */
+  function openPlayer(file, title){
+    q('player-banner').style.backgroundImage = `url('${file}.png')`;
+    player.src = `${file}.mp4`;
     playerModal.classList.add('open');
-    player.play().catch(()=>{/* some browsers block autoplay */});
+    player.play().catch(()=>{});
   }
-  function closePlayer(){
-    player.pause();
-    player.src = '';
-    playerModal.classList.remove('open');
-  }
+  function closePlayer(){ player.pause(); player.src=''; playerModal.classList.remove('open') }
 
-  /* ----------------------
-     AUTO-LOAD on start: if already logged and active profile -> go to home
-     ---------------------- */
+  // close clicking outside
+  playerModal.addEventListener('click', e=>{ if(e.target===playerModal) closePlayer() });
+
+  /* ------------------
+     BOOT (on load)
+     ------------------ */
   window.addEventListener('DOMContentLoaded', ()=>{
+    // If already have user/profile => skip auth
     const u = localStorage.getItem('ike_user');
     const p = localStorage.getItem('ike_pass');
-    if(u && p && localStorage.getItem('ike_active') !== null){
-      // skip auth -> load home directly
+    const active = localStorage.getItem('ike_active');
+    if(u && p && active !== null){
       authRoot.style.display = 'none';
-      profileRoot.style.display = 'none';
+      profilesRoot.style.display = 'none';
       homeRoot.style.display = 'block';
-      const active = parseInt(localStorage.getItem('ike_active')||0);
       const profiles = JSON.parse(localStorage.getItem('ike_profiles')||'[]');
-      if(profiles[active]) {
-        q('mini-avatar').src = profiles[active].icon;
-        q('greeting').innerText = 'Hola, ' + profiles[active].name;
+      if(profiles[active]){ q('mini-avatar').src = profiles[active].icon; q('greeting').innerText = 'Hola, '+profiles[active].name; }
+      // render movies (requires movies.js to be loaded)
+      if(window.movies){ renderMovies(); } else {
+        // if movies.js not loaded yet, wait a tick
+        let tries = 0;
+        const t = setInterval(()=>{
+          tries++;
+          if(window.movies){ clearInterval(t); renderMovies(); }
+          if(tries>50){ clearInterval(t); q('movies-row').innerHTML = '<div style="color:var(--muted);padding:18px">No hay películas definidas. Edita movies.js.</div>' }
+        },80);
       }
-      renderMoviesFromMoviesArray();
     } else if(u && p){
-      // require profile selection
+      // need profile selection
       authRoot.style.display = 'none';
       loadProfilesUI();
     } else {
-      // Show auth
+      // show auth
       authRoot.style.display = 'flex';
     }
-  });
-
-  // Close player when clicking outside content
-  playerModal.addEventListener('click', (e)=>{
-    if(e.target === playerModal) closePlayer();
   });
 
   </script>
