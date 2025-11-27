@@ -8,7 +8,12 @@
 
     <style>
         /* --- RESET --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", Arial, sans-serif;
+        }
 
         body {
             background: #000;
@@ -17,131 +22,162 @@
         }
 
         /* --- ANIMACIONES --- */
-        @keyframes fadeIn { from {opacity:0} to {opacity:1} }
-        @keyframes slideUp { from {transform:translateY(40px);opacity:0} to {transform:translateY(0);opacity:1} }
+        @keyframes fadeIn { from {opacity: 0} to {opacity: 1} }
+        @keyframes slideUp { from {transform: translateY(40px); opacity: 0} to {transform: translateY(0); opacity: 1} }
+        @keyframes pulse { 0% {opacity: 0.5} 50% {opacity: 1} 100% {opacity: 0.5} }
 
-        /* --- LOGIN --- */
+        /* --- LOGIN SCREEN --- */
         #loginScreen {
             position: fixed;
             inset: 0;
+            padding: 20px;
+            background: radial-gradient(circle at top, #111 0%, #000 80%);
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(to bottom, #050505, #000);
-            animation: fadeIn 1s ease;
+            animation: fadeIn 1.2s ease;
         }
 
         .login-box {
-            background: #111;
-            padding: 40px;
             width: 330px;
-            border-radius: 12px;
-            box-shadow: 0 0 20px #ff00003a;
+            padding: 40px 30px;
+            background: #0f0f0f;
+            border-radius: 14px;
+            box-shadow: 0 0 25px #ff00002c;
             animation: slideUp 0.8s ease;
         }
 
         .login-box h1 {
             text-align: center;
-            font-size: 28px;
-            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: 700;
+            color: #e50914;
+            margin-bottom: 25px;
         }
 
         .login-box input {
             width: 100%;
-            padding: 14px;
+            padding: 13px;
             margin: 10px 0;
             border: none;
-            outline: none;
-            background: #222;
-            color: white;
             border-radius: 8px;
+            background: #1b1b1b;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .login-box input:focus {
+            background: #222;
+            box-shadow: 0 0 8px #e5091460;
         }
 
         .login-box button {
             width: 100%;
             padding: 14px;
-            margin-top: 10px;
-            border: none;
             background: #e50914;
-            color: white;
-            font-size: 17px;
+            border: none;
+            font-size: 18px;
             border-radius: 8px;
             cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        .login-box button:hover {
+            background: #ff1520;
+            transform: scale(1.03);
+        }
+
+        /* --- APP --- */
+        #app {
+            display: none;
+            animation: fadeIn 0.8s ease;
         }
 
         /* --- TOPBAR --- */
-        #app {
-            display: none;
-            animation: fadeIn 1s ease;
-        }
-
         .topbar {
             width: 100%;
-            padding: 18px 26px;
+            padding: 18px 28px;
+            background: #000000dd;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #000000d0;
-            position: sticky;
-            top: 0;
-            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #ffffff1c;
         }
 
         .topbar img {
-            height: 40px;
+            height: 42px;
+            animation: fadeIn 1s;
         }
 
         .topbar button {
-            background: none;
-            border: 1px solid #fff4;
-            padding: 8px 14px;
-            border-radius: 6px;
+            background: transparent;
+            border: 1px solid #ffffff49;
+            padding: 8px 16px;
             color: white;
+            border-radius: 6px;
             cursor: pointer;
+            transition: 0.2s;
         }
 
-        /* --- GRID DE PELÍCULAS --- */
+        .topbar button:hover {
+            background: #ffffff17;
+        }
+
+        /* --- GRID PELÍCULAS --- */
         #movieGrid {
-            padding: 30px;
+            padding: 32px;
             display: grid;
-            gap: 20px;
+            gap: 22px;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             animation: fadeIn 1s ease;
         }
 
         .movie-card {
-            background: #111;
+            background: #151515;
             border-radius: 12px;
             overflow: hidden;
-            transition: 0.2s;
+            transition: 0.25s;
+            border: 1px solid #ffffff0a;
         }
 
         .movie-card:hover {
-            transform: scale(1.03);
+            transform: scale(1.05);
+            box-shadow: 0 8px 22px #00000070;
         }
 
         .movie-banner {
             width: 100%;
             height: 240px;
             object-fit: cover;
+            background: #222;
         }
 
         .movie-info {
-            padding: 10px;
+            padding: 12px;
         }
 
         .movie-info h3 {
             font-size: 15px;
             margin-bottom: 10px;
+            line-height: 1.2;
+            min-height: 38px;
         }
 
         .play-btn {
+            width: 100%;
+            padding: 8px;
+            font-size: 15px;
             background: #e50914;
-            padding: 8px 12px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            color: white;
             transition: 0.2s;
         }
 
@@ -173,12 +209,8 @@
         <div id="movieGrid"></div>
     </div>
 
-
 <script>
-/* ==============================
-      SISTEMA LOGIN
-============================== */
-
+/* LOGIN SYSTEM */
 function login() {
     const u = document.getElementById("user").value.trim();
     const p = document.getElementById("pass").value.trim();
@@ -205,7 +237,7 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<!-- movies.js se carga abajo -->
+<!-- Movies JS externo -->
 <script src="movies.js"></script>
 
 </body>
